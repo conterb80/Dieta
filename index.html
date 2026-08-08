@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#08111d">
   <title>Dieta Conte</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="style.css?v=rc5">
+  <link rel="stylesheet" href="style.css?v=rc6">
 </head>
 <body>
 <header class="app-header">
@@ -26,6 +26,7 @@
   <button class="tab" data-tab="spesa">Spesa</button>
   <button class="tab" data-tab="peso">Peso</button>
   <button class="tab" data-tab="attivita">Attività</button>
+  <button class="tab" data-tab="ricette">Ricette</button>
 </nav>
 
 <main>
@@ -151,6 +152,21 @@
     <div id="activities"></div>
   </div>
 </section>
+
+<section id="ricette" class="panel">
+  <div class="card recipes-card">
+    <div class="section-heading"><div><small>RACCOLTA PERSONALE</small><h2>Ricette</h2></div><span class="section-icon orange">♨</span></div>
+    <p class="muted">Le ricette della dieta sempre a portata di mano. Puoi cercarle, aggiungerle a mano oppure importare il file creato in chat.</p>
+    <div class="recipe-toolbar">
+      <input id="recipeSearch" type="search" placeholder="Cerca ricetta o ingrediente…">
+      <select id="recipeCategory"><option value="">Tutte le categorie</option></select>
+      <button id="importRecipesBtn" class="primary-action">Importa ricette</button>
+      <button id="addRecipeBtn">+ Nuova ricetta</button>
+    </div>
+    <input type="file" id="recipesFile" accept="application/json,.json,.dieta" hidden>
+    <div id="recipeList" class="recipe-list"></div>
+  </div>
+</section>
 </main>
 
 <nav class="bottom-nav" aria-label="Navigazione mobile">
@@ -159,6 +175,7 @@
   <button class="tab" data-tab="spesa"><span>🛒</span><small>Spesa</small></button>
   <button class="tab" data-tab="peso"><span>⚖</span><small>Peso</small></button>
   <button class="tab" data-tab="attivita"><span>🏋</span><small>Attività</small></button>
+  <button class="tab" data-tab="ricette"><span>♨</span><small>Ricette</small></button>
 </nav>
 
 <div class="modal-backdrop" id="programModal" hidden>
@@ -177,6 +194,25 @@
   </div>
 </div>
 
-<script src="app.js?v=rc5"></script>
+<div class="modal-backdrop" id="recipeModal" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="recipeModalTitle">Ricetta</h2><button id="closeRecipeModal" aria-label="Chiudi">×</button></div>
+    <div id="recipeViewPane"></div>
+    <div id="recipeEditPane" hidden>
+      <div class="recipe-form">
+        <input id="rTitle" placeholder="Nome ricetta">
+        <select id="rCategory"><option>Pane e impasti</option><option>Colazioni</option><option>Pranzi e cene</option><option>Snack</option><option>Contorni</option><option>Salse</option><option>Altro</option></select>
+        <input id="rPortions" placeholder="Porzioni (es. 4 piadine)">
+        <input id="rTime" placeholder="Tempo (es. 25 min)">
+        <textarea id="rIngredients" rows="7" placeholder="Ingredienti, uno per riga"></textarea>
+        <textarea id="rSteps" rows="8" placeholder="Preparazione, un passaggio per riga"></textarea>
+        <textarea id="rNotes" rows="4" placeholder="Note / conservazione"></textarea>
+      </div>
+      <button id="saveRecipeBtn" class="primary-action full">Salva ricetta</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=rc6"></script>
 </body>
 </html>

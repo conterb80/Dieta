@@ -1,0 +1,16 @@
+{
+  "schema": "dieta-conte-recipes-v1",
+  "recipes": [
+    {
+      "id": "esempio-piatto",
+      "title": "Titolo ricetta",
+      "category": "Pranzi e cene",
+      "portions": "2 porzioni",
+      "time": "30 min",
+      "favorite": false,
+      "ingredients": ["Ingrediente 1", "Ingrediente 2"],
+      "steps": ["Primo passaggio", "Secondo passaggio"],
+      "notes": "Conservazione o note utili."
+    }
+  ]
+}
