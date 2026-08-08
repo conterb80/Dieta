@@ -3,34 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#08111d">
   <title>Dieta Conte</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <div>
-    <small>SETTIMANA 1 · 10–16 AGOSTO</small>
+<header class="app-header">
+  <div class="brand-block">
+    <small class="week-label">▣ &nbsp; SETTIMANA 1 · 10–16 AGOSTO</small>
     <h1>Dieta Conte</h1>
   </div>
-  <div class="goal"><span>121,0</span><small>kg → 115</small></div>
+  <div class="goal">
+    <span id="topWeight">121,0 <em>kg</em></span>
+    <small>Obiettivo: <b>115 kg</b></small>
+  </div>
 </header>
 
-<nav>
-  <button class="tab active" data-tab="oggi">Oggi</button>
-  <button class="tab" data-tab="settimana">Settimana</button>
-  <button class="tab" data-tab="spesa">Spesa</button>
-  <button class="tab" data-tab="peso">Peso</button>
-  <button class="tab" data-tab="attivita">Attività</button>
+<nav class="top-nav" aria-label="Navigazione principale">
+  <button class="tab active" data-tab="oggi"><span>⌂</span>Oggi</button>
+  <button class="tab" data-tab="settimana"><span>▣</span>Settimana</button>
+  <button class="tab" data-tab="spesa"><span>🛒</span>Spesa</button>
+  <button class="tab" data-tab="peso"><span>⚖</span>Peso</button>
+  <button class="tab" data-tab="attivita"><span>🏋</span>Attività</button>
 </nav>
 
 <main>
 <section id="oggi" class="panel active">
   <div class="hero">
-    <div><small>PESO ATTUALE</small><strong id="homeWeight">121,0 kg</strong></div>
-    <div><small>TRAGUARDO</small><strong>115 kg</strong></div>
-    <div><small>PROGRESSO</small><strong id="homeProgress">0,0 kg</strong></div>
+    <div class="hero-card weight-card">
+      <div class="hero-top"><small>PESO ATTUALE</small><span class="hero-icon">⚖</span></div>
+      <strong id="homeWeight">121,0 kg</strong>
+      <span class="hero-note" id="lastWeightDate">Ultimo aggiornamento 08/08/2026</span>
+    </div>
+    <div class="hero-card target-card">
+      <div class="hero-top"><small>TRAGUARDO</small><span class="hero-icon">◎</span></div>
+      <strong>115 kg</strong>
+      <span class="hero-note" id="kgRemaining">Mancano 6,0 kg</span>
+    </div>
+    <div class="hero-card progress-card">
+      <div class="hero-top"><small>PROGRESSO</small><span class="hero-icon">↗</span></div>
+      <strong id="homeProgress">0,0 kg</strong>
+      <span class="hero-note">Percorso iniziato 💪</span>
+    </div>
   </div>
 
   <div class="card today-card">
@@ -41,37 +56,59 @@
       </div>
       <span class="shift" id="todayShift">—</span>
     </div>
-    <div id="todayMeals"></div>
+    <div id="todayMeals" class="today-list"></div>
+    <button class="full-plan-btn tab-link" data-go="settimana">▤ &nbsp; VEDI PIANO COMPLETO DEL GIORNO</button>
   </div>
 
   <div class="status-grid">
-    <div class="mini-status"><small>PASTI SETTIMANA</small><strong id="mealStatus">0 / 0</strong><span id="mealPct">0%</span></div>
-    <div class="mini-status"><small>SPESA</small><strong id="shopStatus">0 / 0</strong><span id="shopPct">0%</span></div>
-    <div class="mini-status"><small>ATTIVITÀ</small><strong id="exerciseStatus">0 / 4</strong><span>programmate</span></div>
+    <div class="mini-status meal-stat">
+      <div class="status-top"><span class="status-icon">🍴</span><small>PASTI SETTIMANA</small></div>
+      <strong id="mealStatus">0 / 0</strong>
+      <div class="progress-track"><div class="progress-bar" id="mealBar"></div></div>
+      <span id="mealPct">0% completato</span>
+    </div>
+    <div class="mini-status shop-stat">
+      <div class="status-top"><span class="status-icon">🛒</span><small>SPESA</small></div>
+      <strong id="shopStatus">0 / 0</strong>
+      <div class="progress-track"><div class="progress-bar" id="shopBar"></div></div>
+      <span id="shopPct">0% completato</span>
+    </div>
+    <div class="mini-status ex-stat">
+      <div class="status-top"><span class="status-icon">🏃</span><small>ATTIVITÀ</small></div>
+      <strong id="exerciseStatus">0 / 4</strong>
+      <div class="progress-track"><div class="progress-bar" id="exerciseBar"></div></div>
+      <span>programmate</span>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>Regole Settimana 1</h2>
-    <p>Acqua come bevanda principale · caffè senza zucchero · zero alcol · niente compensazioni se salti uno spuntino.</p>
-    <p class="muted">Obiettivo: regolarità, non perfezione. Con caldo intenso fai attività solo nelle ore fresche e interrompi in caso di malessere.</p>
+  <div class="card info-card rules-card">
+    <div class="info-icon">✓</div>
+    <div>
+      <h2>Regole Settimana 1</h2>
+      <p>Acqua come bevanda principale · caffè senza zucchero · zero alcol · niente compensazioni se salti uno spuntino.</p>
+      <p class="muted">Obiettivo: regolarità, non perfezione. Con caldo intenso fai attività solo nelle ore fresche e interrompi in caso di malessere.</p>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>Allenamenti programmati</h2>
-    <label class="check"><input type="checkbox" data-save="ex-lun"> Lun 10 · Camminata 20–25 min</label>
-    <label class="check"><input type="checkbox" data-save="ex-mar"> Mar 11 · Cyclette 20–25 min</label>
-    <label class="check"><input type="checkbox" data-save="ex-gio"> Gio 13 · Camminata 25–30 min</label>
-    <label class="check"><input type="checkbox" data-save="ex-ven"> Ven 14 · Cyclette 25–30 min</label>
+  <div class="card workouts-card">
+    <div class="workouts-head"><div class="info-icon purple">🏋</div><h2>Allenamenti programmati</h2></div>
+    <div class="workout-grid">
+      <label class="workout-item"><input type="checkbox" data-save="ex-lun"><b>LUN 10</b><span>20–25 min</span><em>👟</em></label>
+      <label class="workout-item"><input type="checkbox" data-save="ex-mar"><b>MAR 11</b><span>20–25 min</span><em>🚲</em></label>
+      <label class="workout-item"><input type="checkbox" data-save="ex-gio"><b>GIO 13</b><span>25–30 min</span><em>👟</em></label>
+      <label class="workout-item"><input type="checkbox" data-save="ex-ven"><b>VEN 14</b><span>25–30 min</span><em>🚲</em></label>
+    </div>
   </div>
 </section>
+
 <section id="settimana" class="panel">
-  <h2>Programma pasti</h2>
+  <div class="section-heading"><div><small>SETTIMANA 1</small><h2>Programma pasti</h2></div><span class="section-icon">▣</span></div>
   <div id="days"></div>
 </section>
 
 <section id="spesa" class="panel">
   <div class="card">
-    <h2>Lista spesa Settimana 1</h2>
+    <div class="section-heading"><div><small>SETTIMANA 1</small><h2>Lista spesa</h2></div><span class="section-icon orange">🛒</span></div>
     <p class="muted">Quantità pratiche arrotondate alle confezioni comuni. Spunta quello che hai già o hai comprato.</p>
     <div id="shopping"></div>
   </div>
@@ -79,7 +116,7 @@
 
 <section id="peso" class="panel">
   <div class="card">
-    <h2>Trend peso</h2>
+    <div class="section-heading"><div><small>MONITORAGGIO</small><h2>Trend peso</h2></div><span class="section-icon blue">⚖</span></div>
     <div class="weight-form">
       <input id="wdate" type="date">
       <input id="wvalue" type="number" min="50" max="250" step="0.1" placeholder="kg">
@@ -92,10 +129,12 @@
 
 <section id="attivita" class="panel">
   <div class="card">
-    <h2>Programma esercizi</h2>
-    <p><b>Camminata:</b> passo comodo, devi riuscire a parlare. Prime uscite 20–30 minuti.</p>
-    <p><b>Cyclette:</b> resistenza leggera, ritmo continuo e confortevole per 20–30 minuti.</p>
-    <p><b>Recupero:</b> mercoledì e durante le due notti nessun allenamento obbligatorio.</p>
+    <div class="section-heading"><div><small>PROGRAMMA</small><h2>Esercizio</h2></div><span class="section-icon purple">🏋</span></div>
+    <div class="exercise-copy">
+      <p><b>Camminata:</b> passo comodo, devi riuscire a parlare. Prime uscite 20–30 minuti.</p>
+      <p><b>Cyclette:</b> resistenza leggera, ritmo continuo e confortevole per 20–30 minuti.</p>
+      <p><b>Recupero:</b> mercoledì e durante le due notti nessun allenamento obbligatorio.</p>
+    </div>
   </div>
   <div class="card">
     <h2>Registro attività</h2>
@@ -109,6 +148,15 @@
   </div>
 </section>
 </main>
+
+<nav class="bottom-nav" aria-label="Navigazione mobile">
+  <button class="tab active" data-tab="oggi"><span>⌂</span><small>Home</small></button>
+  <button class="tab" data-tab="settimana"><span>▣</span><small>Settimana</small></button>
+  <button class="tab" data-tab="spesa"><span>🛒</span><small>Spesa</small></button>
+  <button class="tab" data-tab="peso"><span>⚖</span><small>Peso</small></button>
+  <button class="tab" data-tab="attivita"><span>🏋</span><small>Attività</small></button>
+</nav>
+
 <script src="app.js"></script>
 </body>
 </html>

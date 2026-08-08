@@ -14,7 +14,13 @@ const shopping={
 "Frutta e verdura":["Banane · 3–4","Frutta di stagione · 10–12 pezzi","Pomodori · circa 1 kg","Insalata/rucola · 2–3 buste o cespi","Zucchine · 4–5","Verdure miste a scelta · circa 2 kg"],
 "Dispensa":["Olio extravergine d'oliva","Mandorle/frutta secca · 100 g","Passata/pomodoro per pasta · 2 confezioni","Marmellata · 1 vasetto"]
 };
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active')}));
+function openTab(id){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.go)));
 const days=document.getElementById('days');
 plan.forEach((d,i)=>{const box=document.createElement('div');box.className='day';box.innerHTML=`<div class="day-head"><h3>${d[0]}</h3><span class="shift">${d[1]}</span></div>`+d[2].map((m,j)=>`<div class="meal"><b>${m[0]}</b>${m[1]}<label class="check"><input type="checkbox" data-save="meal-${i}-${j}"> Fatto</label></div>`).join('');days.appendChild(box)});
 const shop=document.getElementById('shopping');Object.entries(shopping).forEach(([g,items])=>{shop.insertAdjacentHTML('beforeend',`<div class="shop-group">${g}</div>`);items.forEach((x,i)=>shop.insertAdjacentHTML('beforeend',`<label class="check"><input type="checkbox" data-save="shop-${g}-${i}"> ${x}</label>`))});
@@ -63,10 +69,15 @@ function updateDashboard(){
   const shopDone=shopChecks.filter(x=>x.checked).length;
   const exDone=exChecks.filter(x=>x.checked).length;
   document.getElementById('mealStatus').textContent=`${mealDone} / ${mealChecks.length}`;
-  document.getElementById('mealPct').textContent=`${Math.round(mealDone/mealChecks.length*100)||0}%`;
+  const mealPct=Math.round(mealDone/mealChecks.length*100)||0;
+  document.getElementById('mealPct').textContent=`${mealPct}% completato`;
+  document.getElementById('mealBar').style.width=mealPct+'%';
   document.getElementById('shopStatus').textContent=`${shopDone} / ${shopChecks.length}`;
-  document.getElementById('shopPct').textContent=`${Math.round(shopDone/shopChecks.length*100)||0}%`;
+  const shopPct=Math.round(shopDone/shopChecks.length*100)||0;
+  document.getElementById('shopPct').textContent=`${shopPct}% completato`;
+  document.getElementById('shopBar').style.width=shopPct+'%';
   document.getElementById('exerciseStatus').textContent=`${exDone} / ${exChecks.length}`;
+  document.getElementById('exerciseBar').style.width=((exDone/exChecks.length*100)||0)+'%';
   document.querySelectorAll('[data-today-key]').forEach(x=>x.checked=localStorage.getItem(x.dataset.todayKey)==='1');
 }
 
@@ -81,9 +92,15 @@ function renderWeights(){
   document.getElementById('weights').innerHTML=weights.slice().reverse().map(w=>`<div class="row"><span>${w.date.split('-').reverse().join('/')}</span><b>${w.value.toFixed(1).replace('.',',')} kg</b></div>`).join('');
   if(weights.length){
     const latest=weights[weights.length-1].value;
-    document.getElementById('homeWeight').textContent=latest.toFixed(1).replace('.',',')+' kg';
+    const latestTxt=latest.toFixed(1).replace('.',',');
+    document.getElementById('homeWeight').textContent=latestTxt+' kg';
+    document.getElementById('topWeight').innerHTML=latestTxt+' <em>kg</em>';
     const lost=121-latest;
     document.getElementById('homeProgress').textContent=(lost>=0?lost:0).toFixed(1).replace('.',',')+' kg';
+    const remaining=Math.max(0,latest-115);
+    document.getElementById('kgRemaining').textContent='Mancano '+remaining.toFixed(1).replace('.',',')+' kg';
+    const d=weights[weights.length-1].date.split('-').reverse().join('/');
+    document.getElementById('lastWeightDate').textContent='Ultimo aggiornamento '+d;
   }
   drawChart();
 }
