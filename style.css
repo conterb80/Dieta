@@ -12,3 +12,10 @@ main{padding:12px;max-width:850px;margin:auto}.panel{display:none}.panel.active{
 .weight-form button,.activity-form button{grid-column:1/-1;background:#22c55e;color:#052e16}input,select{width:100%;border:1px solid #334155;background:#0f172a;color:#e5e7eb;border-radius:10px;padding:11px;font-size:16px}
 #chart{width:100%;height:auto;margin:15px 0;background:#0f172a;border-radius:12px}.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #25324a}
 @media(max-width:520px){.tab{font-size:10px;padding:10px 3px}.hero strong{font-size:17px}.hero small{font-size:9px}nav{top:75px}}
+.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.mini-status{background:#141d2e;border:1px solid #25324a;border-radius:14px;padding:12px}
+.mini-status strong{font-size:18px;display:block;margin:4px 0}.mini-status span{font-size:12px;color:#94a3b8}
+.today-card{border-color:#36513f}.today-meal{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid #25324a}
+.today-meal input{width:20px;height:20px;flex:0 0 auto;margin-top:2px}.today-meal b{display:block;color:#86efac}
+.progress-track{height:8px;background:#243047;border-radius:999px;overflow:hidden;margin-top:8px}.progress-bar{height:100%;background:#22c55e;width:0}
+@media(max-width:520px){.status-grid{grid-template-columns:1fr 1fr}.mini-status:last-child{grid-column:1/-1}}

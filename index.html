@@ -28,15 +28,34 @@
 <main>
 <section id="oggi" class="panel active">
   <div class="hero">
-    <div><small>PARTENZA</small><strong>121,0 kg</strong></div>
-    <div><small>PRIMO TRAGUARDO</small><strong>115 kg</strong></div>
-    <div><small>DA PERDERE</small><strong>6 kg</strong></div>
+    <div><small>PESO ATTUALE</small><strong id="homeWeight">121,0 kg</strong></div>
+    <div><small>TRAGUARDO</small><strong>115 kg</strong></div>
+    <div><small>PROGRESSO</small><strong id="homeProgress">0,0 kg</strong></div>
   </div>
+
+  <div class="card today-card">
+    <div class="day-head">
+      <div>
+        <small>OGGI / PROSSIMO GIORNO DEL PIANO</small>
+        <h2 id="todayTitle">Settimana 1</h2>
+      </div>
+      <span class="shift" id="todayShift">—</span>
+    </div>
+    <div id="todayMeals"></div>
+  </div>
+
+  <div class="status-grid">
+    <div class="mini-status"><small>PASTI SETTIMANA</small><strong id="mealStatus">0 / 0</strong><span id="mealPct">0%</span></div>
+    <div class="mini-status"><small>SPESA</small><strong id="shopStatus">0 / 0</strong><span id="shopPct">0%</span></div>
+    <div class="mini-status"><small>ATTIVITÀ</small><strong id="exerciseStatus">0 / 4</strong><span>programmate</span></div>
+  </div>
+
   <div class="card">
     <h2>Regole Settimana 1</h2>
     <p>Acqua come bevanda principale · caffè senza zucchero · zero alcol · niente compensazioni se salti uno spuntino.</p>
     <p class="muted">Obiettivo: regolarità, non perfezione. Con caldo intenso fai attività solo nelle ore fresche e interrompi in caso di malessere.</p>
   </div>
+
   <div class="card">
     <h2>Allenamenti programmati</h2>
     <label class="check"><input type="checkbox" data-save="ex-lun"> Lun 10 · Camminata 20–25 min</label>
@@ -45,7 +64,6 @@
     <label class="check"><input type="checkbox" data-save="ex-ven"> Ven 14 · Cyclette 25–30 min</label>
   </div>
 </section>
-
 <section id="settimana" class="panel">
   <h2>Programma pasti</h2>
   <div id="days"></div>

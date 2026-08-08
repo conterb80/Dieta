@@ -18,15 +18,77 @@ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{doc
 const days=document.getElementById('days');
 plan.forEach((d,i)=>{const box=document.createElement('div');box.className='day';box.innerHTML=`<div class="day-head"><h3>${d[0]}</h3><span class="shift">${d[1]}</span></div>`+d[2].map((m,j)=>`<div class="meal"><b>${m[0]}</b>${m[1]}<label class="check"><input type="checkbox" data-save="meal-${i}-${j}"> Fatto</label></div>`).join('');days.appendChild(box)});
 const shop=document.getElementById('shopping');Object.entries(shopping).forEach(([g,items])=>{shop.insertAdjacentHTML('beforeend',`<div class="shop-group">${g}</div>`);items.forEach((x,i)=>shop.insertAdjacentHTML('beforeend',`<label class="check"><input type="checkbox" data-save="shop-${g}-${i}"> ${x}</label>`))});
-function restoreChecks(){document.querySelectorAll('[data-save]').forEach(x=>{x.checked=localStorage.getItem(x.dataset.save)==='1';x.addEventListener('change',()=>localStorage.setItem(x.dataset.save,x.checked?'1':'0'))})}restoreChecks();
+function restoreChecks(){
+  document.querySelectorAll('[data-save]').forEach(x=>{
+    x.checked=localStorage.getItem(x.dataset.save)==='1';
+    x.addEventListener('change',()=>{
+      localStorage.setItem(x.dataset.save,x.checked?'1':'0');
+      updateDashboard();
+    });
+  });
+}
+restoreChecks();
+
+function currentPlanIndex(){
+  const today=new Date();
+  const targetStart=new Date('2026-08-10T00:00:00');
+  const diff=Math.floor((today-targetStart)/86400000);
+  if(diff<0) return 0;
+  if(diff>6) return 6;
+  return diff;
+}
+
+function renderToday(){
+  const i=currentPlanIndex(), d=plan[i];
+  document.getElementById('todayTitle').textContent=d[0];
+  document.getElementById('todayShift').textContent=d[1];
+  document.getElementById('todayMeals').innerHTML=d[2].map((m,j)=>{
+    const key=`meal-${i}-${j}`;
+    const checked=localStorage.getItem(key)==='1'?'checked':'';
+    return `<label class="today-meal"><input type="checkbox" data-today-key="${key}" ${checked}><span><b>${m[0]}</b>${m[1]}</span></label>`;
+  }).join('');
+  document.querySelectorAll('[data-today-key]').forEach(x=>x.addEventListener('change',()=>{
+    localStorage.setItem(x.dataset.todayKey,x.checked?'1':'0');
+    const original=document.querySelector(`[data-save="${x.dataset.todayKey}"]`);
+    if(original) original.checked=x.checked;
+    updateDashboard();
+  }));
+}
+
+function updateDashboard(){
+  const mealChecks=[...document.querySelectorAll('[data-save^="meal-"]')];
+  const shopChecks=[...document.querySelectorAll('[data-save^="shop-"]')];
+  const exChecks=[...document.querySelectorAll('[data-save^="ex-"]')];
+  const mealDone=mealChecks.filter(x=>x.checked).length;
+  const shopDone=shopChecks.filter(x=>x.checked).length;
+  const exDone=exChecks.filter(x=>x.checked).length;
+  document.getElementById('mealStatus').textContent=`${mealDone} / ${mealChecks.length}`;
+  document.getElementById('mealPct').textContent=`${Math.round(mealDone/mealChecks.length*100)||0}%`;
+  document.getElementById('shopStatus').textContent=`${shopDone} / ${shopChecks.length}`;
+  document.getElementById('shopPct').textContent=`${Math.round(shopDone/shopChecks.length*100)||0}%`;
+  document.getElementById('exerciseStatus').textContent=`${exDone} / ${exChecks.length}`;
+  document.querySelectorAll('[data-today-key]').forEach(x=>x.checked=localStorage.getItem(x.dataset.todayKey)==='1');
+}
+
+renderToday();
+
 let weights=JSON.parse(localStorage.getItem('weights')||'[{"date":"2026-08-08","value":121}]');
 let activities=JSON.parse(localStorage.getItem('activities')||'[]');
 const wdate=document.getElementById('wdate');wdate.value=new Date().toISOString().slice(0,10);
 document.getElementById('adate').value=wdate.value;
 document.getElementById('addWeight').addEventListener('click',()=>{const v=+document.getElementById('wvalue').value,d=wdate.value;if(!d||!v)return;weights.push({date:d,value:v});weights.sort((a,b)=>a.date.localeCompare(b.date));localStorage.setItem('weights',JSON.stringify(weights));renderWeights()});
-function renderWeights(){document.getElementById('weights').innerHTML=weights.slice().reverse().map(w=>`<div class="row"><span>${w.date.split('-').reverse().join('/')}</span><b>${w.value.toFixed(1).replace('.',',')} kg</b></div>`).join('');drawChart()}
+function renderWeights(){
+  document.getElementById('weights').innerHTML=weights.slice().reverse().map(w=>`<div class="row"><span>${w.date.split('-').reverse().join('/')}</span><b>${w.value.toFixed(1).replace('.',',')} kg</b></div>`).join('');
+  if(weights.length){
+    const latest=weights[weights.length-1].value;
+    document.getElementById('homeWeight').textContent=latest.toFixed(1).replace('.',',')+' kg';
+    const lost=121-latest;
+    document.getElementById('homeProgress').textContent=(lost>=0?lost:0).toFixed(1).replace('.',',')+' kg';
+  }
+  drawChart();
+}
 function drawChart(){const c=document.getElementById('chart'),x=c.getContext('2d'),W=c.width,H=c.height;x.clearRect(0,0,W,H);x.strokeStyle='#334155';x.lineWidth=1;for(let i=0;i<5;i++){let y=25+i*(H-50)/4;x.beginPath();x.moveTo(35,y);x.lineTo(W-20,y);x.stroke()}if(!weights.length)return;const vals=weights.map(w=>w.value),min=Math.min(115,...vals)-1,max=Math.max(121,...vals)+1;const px=i=>35+(W-65)*(weights.length===1?.5:i/(weights.length-1));const py=v=>25+(max-v)/(max-min)*(H-50);x.strokeStyle='#22c55e';x.lineWidth=4;x.beginPath();weights.forEach((w,i)=>{i?x.lineTo(px(i),py(w.value)):x.moveTo(px(i),py(w.value))});x.stroke();x.fillStyle='#86efac';weights.forEach((w,i)=>{x.beginPath();x.arc(px(i),py(w.value),6,0,Math.PI*2);x.fill()});x.fillStyle='#94a3b8';x.font='18px system-ui';x.fillText('115 kg',40,py(115)-8)}
 document.getElementById('addActivity').addEventListener('click',()=>{const d=document.getElementById('adate').value,t=document.getElementById('atype').value,m=+document.getElementById('amin').value;if(!d||!m)return;activities.push({date:d,type:t,min:m});localStorage.setItem('activities',JSON.stringify(activities));renderActivities()});
 function renderActivities(){document.getElementById('activities').innerHTML=activities.slice().reverse().map(a=>`<div class="row"><span>${a.date.split('-').reverse().join('/')} · ${a.type}</span><b>${a.min} min</b></div>`).join('')}
-renderWeights();renderActivities();
+renderWeights();renderActivities();updateDashboard();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js');
