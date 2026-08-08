@@ -1,0 +1,16 @@
+{
+  "schema": "dieta-conte-v1",
+  "id": "2026-W34",
+  "weekName": "Settimana 2",
+  "startDate": "2026-08-17",
+  "endDate": "2026-08-23",
+  "goalWeight": 115,
+  "rules": "Regole della settimana preparate in chat.",
+  "rulesNote": "Nota operativa.",
+  "days": [
+    {"date":"2026-08-17","label":"Lun 17","shift":"06–14","meals":[["Colazione","..."],["Pranzo","..."]]}
+  ],
+  "shopping": {"Proteine":["..."]},
+  "workouts": [{"date":"2026-08-17","label":"LUN 17","type":"Camminata","duration":"25 min","icon":"👟"}],
+  "exerciseNotes": ["Indicazioni allenamento preparate in chat."]
+}

@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#08111d">
   <title>Dieta Conte</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="style.css?v=rc4">
+  <link rel="stylesheet" href="style.css?v=rc5">
 </head>
 <body>
 <header class="app-header">
   <div class="brand-block">
-    <small class="week-label">SETTIMANA 1 · 10–16 AGOSTO</small>
+    <small class="week-label" id="headerWeekLabel">SETTIMANA 1 · 10–16 AGOSTO</small>
     <h1>Dieta Conte</h1>
   </div>
   <div class="goal">
@@ -84,31 +84,39 @@
   <div class="card info-card rules-card">
     <div class="info-icon">✓</div>
     <div>
-      <h2>Regole Settimana 1</h2>
-      <p>Acqua come bevanda principale · caffè senza zucchero · zero alcol · niente compensazioni se salti uno spuntino.</p>
+      <h2 id="rulesTitle">Regole Settimana 1</h2>
+      <p id="rulesText">Acqua come bevanda principale · caffè senza zucchero · zero alcol · niente compensazioni se salti uno spuntino.</p>
       <p class="muted">Obiettivo: regolarità, non perfezione. Con caldo intenso fai attività solo nelle ore fresche e interrompi in caso di malessere.</p>
     </div>
   </div>
 
   <div class="card workouts-card">
     <div class="workouts-head"><div class="info-icon purple">🏋</div><h2>Allenamenti programmati</h2></div>
-    <div class="workout-grid">
-      <label class="workout-item"><input type="checkbox" data-save="ex-lun"><b>LUN 10</b><span>20–25 min</span><em>👟</em></label>
-      <label class="workout-item"><input type="checkbox" data-save="ex-mar"><b>MAR 11</b><span>20–25 min</span><em>🚲</em></label>
-      <label class="workout-item"><input type="checkbox" data-save="ex-gio"><b>GIO 13</b><span>25–30 min</span><em>👟</em></label>
-      <label class="workout-item"><input type="checkbox" data-save="ex-ven"><b>VEN 14</b><span>25–30 min</span><em>🚲</em></label>
-    </div>
+    <div class="workout-grid" id="homeWorkouts"></div>
   </div>
 </section>
 
 <section id="settimana" class="panel">
-  <div class="section-heading"><div><small>SETTIMANA 1</small><h2>Programma pasti</h2></div><span class="section-icon">▣</span></div>
+  <div class="card program-manager">
+    <div class="section-heading"><div><small>GESTIONE PROGRAMMA</small><h2>Nuova settimana</h2></div><span class="section-icon">⇩</span></div>
+    <p class="muted">Importa con un solo file il piano creato in chat: pasti, turni, allenamenti, regole e lista della spesa.</p>
+    <div class="program-actions">
+      <button id="importProgramBtn" class="primary-action">Importa programma</button>
+      <button id="pasteProgramBtn">Incolla codice</button>
+      <button id="editProgramBtn">Modifica turni / attività</button>
+      <button id="duplicateProgramBtn">Duplica settimana</button>
+      <button id="exportProgramBtn">Esporta backup</button>
+    </div>
+    <input type="file" id="programFile" accept="application/json,.json,.dieta" hidden>
+    <div class="import-status" id="importStatus">Programma attivo: <b id="activeProgramName">Settimana 1</b></div>
+  </div>
+  <div class="section-heading"><div><small id="weekSectionLabel">SETTIMANA 1</small><h2>Programma pasti</h2></div><span class="section-icon">▣</span></div>
   <div id="days"></div>
 </section>
 
 <section id="spesa" class="panel">
   <div class="card">
-    <div class="section-heading"><div><small>SETTIMANA 1</small><h2>Lista spesa</h2></div><span class="section-icon orange">🛒</span></div>
+    <div class="section-heading"><div><small id="shoppingWeekLabel">SETTIMANA 1</small><h2>Lista spesa</h2></div><span class="section-icon orange">🛒</span></div>
     <p class="muted">Quantità pratiche arrotondate alle confezioni comuni. Spunta quello che hai già o hai comprato.</p>
     <div id="shopping"></div>
   </div>
@@ -130,11 +138,7 @@
 <section id="attivita" class="panel">
   <div class="card">
     <div class="section-heading"><div><small>PROGRAMMA</small><h2>Esercizio</h2></div><span class="section-icon purple">🏋</span></div>
-    <div class="exercise-copy">
-      <p><b>Camminata:</b> passo comodo, devi riuscire a parlare. Prime uscite 20–30 minuti.</p>
-      <p><b>Cyclette:</b> resistenza leggera, ritmo continuo e confortevole per 20–30 minuti.</p>
-      <p><b>Recupero:</b> mercoledì e durante le due notti nessun allenamento obbligatorio.</p>
-    </div>
+    <div class="exercise-copy" id="exerciseProgram"></div>
   </div>
   <div class="card">
     <h2>Registro attività</h2>
@@ -157,6 +161,22 @@
   <button class="tab" data-tab="attivita"><span>🏋</span><small>Attività</small></button>
 </nav>
 
-<script src="app.js?v=rc4"></script>
+<div class="modal-backdrop" id="programModal" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="modalTitle">Importa programma</h2><button id="closeModal" aria-label="Chiudi">×</button></div>
+    <div id="pastePane" hidden>
+      <p class="muted">Incolla qui il blocco JSON “Dieta Conte” creato in chat.</p>
+      <textarea id="programPaste" rows="14" placeholder='{"schema":"dieta-conte-v1", ...}'></textarea>
+      <button id="confirmPaste" class="primary-action full">Importa questo programma</button>
+    </div>
+    <div id="editPane" hidden>
+      <p class="muted">Correggi rapidamente turni e allenamenti senza modificare il piano alimentare.</p>
+      <div id="weekEditor"></div>
+      <button id="saveWeekEdits" class="primary-action full">Salva modifiche</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=rc5"></script>
 </body>
 </html>

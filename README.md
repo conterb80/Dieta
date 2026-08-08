@@ -1,16 +1,13 @@
-# Dieta Conte RC2
+# Dieta Conte RC5 — Gestione Settimane
 
-Seconda release della dashboard personale.
+Novità principali:
+- Importazione con un solo file JSON del programma completo della settimana.
+- Il file può contenere pasti, turni, allenamenti, regole e lista della spesa.
+- Importazione alternativa tramite copia/incolla del codice JSON.
+- Modifica rapida di turni e attività direttamente dall'app.
+- Duplicazione della settimana precedente.
+- Esportazione backup del programma attivo.
+- Peso e registro attività restano indipendenti e non si azzerano al cambio settimana.
+- Check di pasti, spesa e allenamenti separati per ogni settimana.
 
-Novità RC2:
-- Home “Oggi” con il giorno del piano e relativi pasti.
-- Riepilogo immediato di pasti completati, spesa e attività.
-- Peso attuale e progresso verso il primo traguardo.
-- Sincronizzazione delle spunte tra Home e programma settimanale.
-- Tutte le funzioni RC1 restano presenti.
-
-I dati sono salvati localmente nel browser del dispositivo e non si sincronizzano automaticamente tra dispositivi.
-
-
-## RC4
-Restyling mobile compatto, correzione overflow/card, icone problematiche rimosse dalla navigazione superiore, cache PWA aggiornata.
+Formato importazione: `schema: dieta-conte-v1`.

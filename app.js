@@ -1,111 +1,153 @@
-const plan=[
-["Lun 10","14–22",[["Al risveglio","Yogurt greco 200 g + banana + mandorle 15 g"],["12:30 · Pranzo","Pasta 90 g al pomodoro + pollo 160 g + verdure + olio EVO 10 g"],["17:30 · Lavoro","1 frutto"],["19:30 · Lavoro","Piadina integrale 80–100 g + bresaola 80 g + rucola/pomodori + formaggio fresco 30 g"],["Rientro, solo se fame","Yogurt bianco 125–150 g"]]],
-["Mar 11","Riposo",[["Colazione","2 uova + pane integrale 60 g + 1 frutto"],["Pranzo","Riso basmati 90 g + tonno naturale 120 g sgocciolato + verdure + olio EVO 10 g"],["Spuntino","Yogurt greco 170 g"],["Cena","Merluzzo/nasello 200 g + patate 250 g + verdure + olio EVO 10 g"]]],
-["Mer 12","14–22",[["Colazione","Latte parz. scremato 250 ml + pane integrale 60 g + marmellata 20 g"],["12:30 · Pranzo","Riso 90 g + tacchino 160 g + zucchine grigliate/in padella + olio EVO 10 g"],["Lavoro","1 frutto"],["19:30 · Lavoro","Insalatona + 2 uova + tonno 80 g + pane 70 g + olio EVO 10 g"],["Rientro, solo se fame","Yogurt"]]],
-["Gio 13","14–22",[["Colazione","Yogurt greco 200 g + 1 frutto + frutta secca 15 g"],["Pranzo","Pasta 90 g al pomodoro + carne magra 160 g + verdure + olio EVO 10 g"],["Lavoro","1 frutto"],["19:30 · Lavoro","Mozzarella 125 g + pomodori + pane integrale 80 g + verdure + olio EVO 10 g"],["Rientro, solo se fame","Yogurt"]]],
-["Ven 14","Riposo",[["Colazione","2 uova + pane 60 g + 1 frutto"],["Pranzo","Pasta 90 g + legumi 150 g già cotti + verdure + olio EVO 10 g"],["Spuntino","Yogurt greco 170 g + 1 frutto"],["Cena","Pollo/tacchino 180 g + patate 250 g + verdure + olio EVO 10 g"]]],
-["Sab 15","22–06",[["Primo pasto","Yogurt greco 200 g + banana + mandorle 15 g"],["Pranzo","Riso 90 g + pollo 160 g + verdure + olio EVO 10 g"],["20:00 · Prima del lavoro","Pesce 180–200 g + pane 80 g + verdure + olio EVO 10 g"],["01:00–02:00","Yogurt greco 170 g + 1 frutto"],["06:30 · Solo se fame","Latte 200 ml oppure yogurt; altrimenti acqua e sonno"]]],
-["Dom 16","22–06",[["Dopo il risveglio","Yogurt greco 200 g + 1 frutto + mandorle 15 g"],["Pasto principale","Pasta 90 g + tonno 120 g + pomodoro/verdure + olio EVO 10 g"],["20:00 · Prima del lavoro","Pollo/tacchino 180 g + pane 80 g + verdure + olio EVO 10 g"],["Durante la notte","Yogurt 170 g + 1 frutto"],["Rientro","Piccolo alimento solo se fame"]]]
-];
-const shopping={
-"Carne, pesce e proteine":["Petto di pollo/tacchino · circa 900 g","Carne magra · 200 g","Merluzzo/nasello o altro pesce magro · circa 400 g","Tonno al naturale · 4–5 scatolette (circa 320 g sgocciolato)","Bresaola · 100 g","Uova · 6","Legumi cotti · 1 confezione/barattolo"],
-"Latticini":["Yogurt greco/bianco naturale · circa 1,5 kg","Mozzarella · 125 g","Formaggio fresco · 1 confezione piccola","Latte parzialmente scremato · 1 litro"],
-"Carboidrati":["Pasta · 500 g","Riso/basmati · 500 g","Pane integrale · circa 500 g","Piadine integrali · 1 confezione","Patate · 500–750 g"],
-"Frutta e verdura":["Banane · 3–4","Frutta di stagione · 10–12 pezzi","Pomodori · circa 1 kg","Insalata/rucola · 2–3 buste o cespi","Zucchine · 4–5","Verdure miste a scelta · circa 2 kg"],
-"Dispensa":["Olio extravergine d'oliva","Mandorle/frutta secca · 100 g","Passata/pomodoro per pasta · 2 confezioni","Marmellata · 1 vasetto"]
+const DEFAULT_PROGRAM={
+  schema:'dieta-conte-v1',
+  id:'2026-W33',
+  weekName:'Settimana 1',
+  startDate:'2026-08-10',
+  endDate:'2026-08-16',
+  goalWeight:115,
+  rules:'Acqua come bevanda principale · caffè senza zucchero · zero alcol · niente compensazioni se salti uno spuntino.',
+  rulesNote:'Obiettivo: regolarità, non perfezione. Con caldo intenso fai attività solo nelle ore fresche e interrompi in caso di malessere.',
+  days:[
+    {date:'2026-08-10',label:'Lun 10',shift:'14–22',meals:[['Al risveglio','Yogurt greco 200 g + banana + mandorle 15 g'],['12:30 · Pranzo','Pasta 90 g al pomodoro + pollo 160 g + verdure + olio EVO 10 g'],['17:30 · Lavoro','1 frutto'],['19:30 · Lavoro','Piadina integrale 80–100 g + bresaola 80 g + rucola/pomodori + formaggio fresco 30 g'],['Rientro, solo se fame','Yogurt bianco 125–150 g']]},
+    {date:'2026-08-11',label:'Mar 11',shift:'Riposo',meals:[['Colazione','2 uova + pane integrale 60 g + 1 frutto'],['Pranzo','Riso basmati 90 g + tonno naturale 120 g sgocciolato + verdure + olio EVO 10 g'],['Spuntino','Yogurt greco 170 g'],['Cena','Merluzzo/nasello 200 g + patate 250 g + verdure + olio EVO 10 g']]},
+    {date:'2026-08-12',label:'Mer 12',shift:'14–22',meals:[['Colazione','Latte parz. scremato 250 ml + pane integrale 60 g + marmellata 20 g'],['12:30 · Pranzo','Riso 90 g + tacchino 160 g + zucchine grigliate/in padella + olio EVO 10 g'],['Lavoro','1 frutto'],['19:30 · Lavoro','Insalatona + 2 uova + tonno 80 g + pane 70 g + olio EVO 10 g'],['Rientro, solo se fame','Yogurt']]},
+    {date:'2026-08-13',label:'Gio 13',shift:'14–22',meals:[['Colazione','Yogurt greco 200 g + 1 frutto + frutta secca 15 g'],['Pranzo','Pasta 90 g al pomodoro + carne magra 160 g + verdure + olio EVO 10 g'],['Lavoro','1 frutto'],['19:30 · Lavoro','Mozzarella 125 g + pomodori + pane integrale 80 g + verdure + olio EVO 10 g'],['Rientro, solo se fame','Yogurt']]},
+    {date:'2026-08-14',label:'Ven 14',shift:'Riposo',meals:[['Colazione','2 uova + pane 60 g + 1 frutto'],['Pranzo','Pasta 90 g + legumi 150 g già cotti + verdure + olio EVO 10 g'],['Spuntino','Yogurt greco 170 g + 1 frutto'],['Cena','Pollo/tacchino 180 g + patate 250 g + verdure + olio EVO 10 g']]},
+    {date:'2026-08-15',label:'Sab 15',shift:'22–06',meals:[['Primo pasto','Yogurt greco 200 g + banana + mandorle 15 g'],['Pranzo','Riso 90 g + pollo 160 g + verdure + olio EVO 10 g'],['20:00 · Prima del lavoro','Pesce 180–200 g + pane 80 g + verdure + olio EVO 10 g'],['01:00–02:00','Yogurt greco 170 g + 1 frutto'],['06:30 · Solo se fame','Latte 200 ml oppure yogurt; altrimenti acqua e sonno']]},
+    {date:'2026-08-16',label:'Dom 16',shift:'22–06',meals:[['Dopo il risveglio','Yogurt greco 200 g + 1 frutto + mandorle 15 g'],['Pasto principale','Pasta 90 g + tonno 120 g + pomodoro/verdure + olio EVO 10 g'],['20:00 · Prima del lavoro','Pollo/tacchino 180 g + pane 80 g + verdure + olio EVO 10 g'],['Durante la notte','Yogurt 170 g + 1 frutto'],['Rientro','Piccolo alimento solo se fame']]}
+  ],
+  shopping:{
+    'Carne, pesce e proteine':['Petto di pollo/tacchino · circa 900 g','Carne magra · 200 g','Merluzzo/nasello o altro pesce magro · circa 400 g','Tonno al naturale · 4–5 scatolette (circa 320 g sgocciolato)','Bresaola · 100 g','Uova · 6','Legumi cotti · 1 confezione/barattolo'],
+    'Latticini':['Yogurt greco/bianco naturale · circa 1,5 kg','Mozzarella · 125 g','Formaggio fresco · 1 confezione piccola','Latte parzialmente scremato · 1 litro'],
+    'Carboidrati':['Pasta · 500 g','Riso/basmati · 500 g','Pane integrale · circa 500 g','Piadine integrali · 1 confezione','Patate · 500–750 g'],
+    'Frutta e verdura':['Banane · 3–4','Frutta di stagione · 10–12 pezzi','Pomodori · circa 1 kg','Insalata/rucola · 2–3 buste o cespi','Zucchine · 4–5','Verdure miste a scelta · circa 2 kg'],
+    'Dispensa':['Olio extravergine d\'oliva','Mandorle/frutta secca · 100 g','Passata/pomodoro per pasta · 2 confezioni','Marmellata · 1 vasetto']
+  },
+  workouts:[
+    {date:'2026-08-10',label:'LUN 10',type:'Camminata',duration:'20–25 min',icon:'👟'},
+    {date:'2026-08-11',label:'MAR 11',type:'Cyclette',duration:'20–25 min',icon:'🚲'},
+    {date:'2026-08-13',label:'GIO 13',type:'Camminata',duration:'25–30 min',icon:'👟'},
+    {date:'2026-08-14',label:'VEN 14',type:'Cyclette',duration:'25–30 min',icon:'🚲'}
+  ],
+  exerciseNotes:['Camminata: passo comodo, devi riuscire a parlare.','Cyclette: resistenza leggera, ritmo continuo e confortevole.','Recupero: nei giorni non programmati nessun allenamento obbligatorio.']
 };
-function openTab(id){
-  document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));
-  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));
-  window.scrollTo({top:0,behavior:'smooth'});
+
+const PROGRAM_KEY='dietaConteProgram';
+const ARCHIVE_KEY='dietaConteArchive';
+let program=loadProgram();
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function loadProgram(){try{return JSON.parse(localStorage.getItem(PROGRAM_KEY))||clone(DEFAULT_PROGRAM)}catch(e){return clone(DEFAULT_PROGRAM)}}
+function saveProgram(){localStorage.setItem(PROGRAM_KEY,JSON.stringify(program))}
+function sanitizeProgram(p){
+  if(!p||p.schema!=='dieta-conte-v1'||!Array.isArray(p.days)||!p.days.length) throw new Error('Formato programma non riconosciuto');
+  p.weekName=p.weekName||'Nuova settimana'; p.startDate=p.startDate||p.days[0].date; p.endDate=p.endDate||p.days[p.days.length-1].date;
+  p.shopping=p.shopping||{}; p.workouts=p.workouts||[]; p.rules=p.rules||''; p.exerciseNotes=p.exerciseNotes||[];
+  p.days.forEach((d,i)=>{d.label=d.label||formatDayLabel(d.date);d.shift=d.shift||'Riposo';d.meals=d.meals||[]});
+  return p;
 }
+function formatDayLabel(iso){const d=new Date(iso+'T12:00:00');return d.toLocaleDateString('it-IT',{weekday:'short',day:'numeric'}).replace('.','').replace(/^./,m=>m.toUpperCase())}
+function weekRangeLabel(){const s=new Date(program.startDate+'T12:00:00'),e=new Date(program.endDate+'T12:00:00');const sm=s.toLocaleDateString('it-IT',{day:'numeric',month:'long'});const em=e.toLocaleDateString('it-IT',{day:'numeric',month:'long'});return `${program.weekName.toUpperCase()} · ${sm}–${em}`}
+function prefix(){return `prog-${program.id||program.startDate}`}
+function mealKey(i,j){return `${prefix()}-meal-${i}-${j}`}
+function shopKey(g,i){return `${prefix()}-shop-${slug(g)}-${i}`}
+function exKey(i){return `${prefix()}-ex-${i}`}
+function slug(x){return String(x).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-')}
+
+function openTab(id){document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.go)));
-const days=document.getElementById('days');
-plan.forEach((d,i)=>{const box=document.createElement('div');box.className='day';box.innerHTML=`<div class="day-head"><h3>${d[0]}</h3><span class="shift">${d[1]}</span></div>`+d[2].map((m,j)=>`<div class="meal"><b>${m[0]}</b>${m[1]}<label class="check"><input type="checkbox" data-save="meal-${i}-${j}"> Fatto</label></div>`).join('');days.appendChild(box)});
-const shop=document.getElementById('shopping');Object.entries(shopping).forEach(([g,items])=>{shop.insertAdjacentHTML('beforeend',`<div class="shop-group">${g}</div>`);items.forEach((x,i)=>shop.insertAdjacentHTML('beforeend',`<label class="check"><input type="checkbox" data-save="shop-${g}-${i}"> ${x}</label>`))});
+
+function renderProgram(){
+  document.getElementById('headerWeekLabel').textContent=weekRangeLabel();
+  document.getElementById('weekSectionLabel').textContent=program.weekName.toUpperCase();
+  document.getElementById('shoppingWeekLabel').textContent=program.weekName.toUpperCase();
+  document.getElementById('activeProgramName').textContent=`${program.weekName} · ${program.startDate.split('-').reverse().join('/')}–${program.endDate.split('-').reverse().join('/')}`;
+  document.getElementById('rulesTitle').textContent=`Regole ${program.weekName}`;
+  document.getElementById('rulesText').textContent=program.rules||'Nessuna regola specifica per questa settimana.';
+  const note=document.querySelector('.rules-card .muted'); if(note) note.textContent=program.rulesNote||'Obiettivo: regolarità, non perfezione.';
+  renderDays();renderShopping();renderHomeWorkouts();renderExerciseProgram();renderToday();restoreChecks();updateDashboard();
+}
+function renderDays(){
+  const days=document.getElementById('days');days.innerHTML='';
+  program.days.forEach((d,i)=>{const box=document.createElement('div');box.className='day';box.innerHTML=`<div class="day-head"><h3>${d.label}</h3><span class="shift">${d.shift}</span></div>`+d.meals.map((m,j)=>`<div class="meal"><b>${m[0]}</b>${m[1]}<label class="check"><input type="checkbox" data-save="${mealKey(i,j)}"> Fatto</label></div>`).join('');days.appendChild(box)});
+}
+function renderShopping(){
+  const shop=document.getElementById('shopping');shop.innerHTML='';
+  Object.entries(program.shopping||{}).forEach(([g,items])=>{shop.insertAdjacentHTML('beforeend',`<div class="shop-group">${g}</div>`);items.forEach((x,i)=>shop.insertAdjacentHTML('beforeend',`<label class="check"><input type="checkbox" data-save="${shopKey(g,i)}"> ${x}</label>`))});
+}
+function renderHomeWorkouts(){
+  const box=document.getElementById('homeWorkouts');box.innerHTML='';
+  (program.workouts||[]).forEach((w,i)=>box.insertAdjacentHTML('beforeend',`<label class="workout-item"><input type="checkbox" data-save="${exKey(i)}"><b>${w.label||formatDayLabel(w.date).toUpperCase()}</b><span>${w.duration||w.type||'Attività'}</span><em>${w.icon||'🏃'}</em></label>`));
+  if(!(program.workouts||[]).length) box.innerHTML='<p class="muted">Nessun allenamento programmato.</p>';
+}
+function renderExerciseProgram(){
+  const notes=program.exerciseNotes||[];
+  const details=(program.workouts||[]).map(w=>`<p><b>${w.label||formatDayLabel(w.date)} · ${w.type||'Attività'}:</b> ${w.duration||''}${w.details?' · '+w.details:''}</p>`).join('');
+  document.getElementById('exerciseProgram').innerHTML=details+(notes.length?notes.map(n=>`<p class="muted">${n}</p>`).join(''):'');
+}
 function restoreChecks(){
-  document.querySelectorAll('[data-save]').forEach(x=>{
-    x.checked=localStorage.getItem(x.dataset.save)==='1';
-    x.addEventListener('change',()=>{
-      localStorage.setItem(x.dataset.save,x.checked?'1':'0');
-      updateDashboard();
-    });
-  });
+  document.querySelectorAll('[data-save]').forEach(x=>{x.checked=localStorage.getItem(x.dataset.save)==='1';x.onchange=()=>{localStorage.setItem(x.dataset.save,x.checked?'1':'0');updateDashboard()}});
 }
-restoreChecks();
-
 function currentPlanIndex(){
-  const today=new Date();
-  const targetStart=new Date('2026-08-10T00:00:00');
-  const diff=Math.floor((today-targetStart)/86400000);
-  if(diff<0) return 0;
-  if(diff>6) return 6;
-  return diff;
+  const today=new Date(); const start=new Date(program.startDate+'T00:00:00'); const diff=Math.floor((today-start)/86400000);
+  if(diff<0)return 0;if(diff>=program.days.length)return program.days.length-1;return diff;
 }
-
 function renderToday(){
-  const i=currentPlanIndex(), d=plan[i];
-  document.getElementById('todayTitle').textContent=d[0];
-  document.getElementById('todayShift').textContent=d[1];
-  document.getElementById('todayMeals').innerHTML=d[2].map((m,j)=>{
-    const key=`meal-${i}-${j}`;
-    const checked=localStorage.getItem(key)==='1'?'checked':'';
-    return `<label class="today-meal"><input type="checkbox" data-today-key="${key}" ${checked}><span><b>${m[0]}</b>${m[1]}</span></label>`;
-  }).join('');
-  document.querySelectorAll('[data-today-key]').forEach(x=>x.addEventListener('change',()=>{
-    localStorage.setItem(x.dataset.todayKey,x.checked?'1':'0');
-    const original=document.querySelector(`[data-save="${x.dataset.todayKey}"]`);
-    if(original) original.checked=x.checked;
-    updateDashboard();
-  }));
+  const i=currentPlanIndex(),d=program.days[i]; if(!d)return;
+  document.getElementById('todayTitle').textContent=d.label;document.getElementById('todayShift').textContent=d.shift;
+  document.getElementById('todayMeals').innerHTML=d.meals.map((m,j)=>{const key=mealKey(i,j),checked=localStorage.getItem(key)==='1'?'checked':'';return `<label class="today-meal"><input type="checkbox" data-today-key="${key}" ${checked}><span><b>${m[0]}</b>${m[1]}</span></label>`}).join('');
+  document.querySelectorAll('[data-today-key]').forEach(x=>x.addEventListener('change',()=>{localStorage.setItem(x.dataset.todayKey,x.checked?'1':'0');const original=document.querySelector(`[data-save="${x.dataset.todayKey}"]`);if(original)original.checked=x.checked;updateDashboard()}));
 }
-
 function updateDashboard(){
-  const mealChecks=[...document.querySelectorAll('[data-save^="meal-"]')];
-  const shopChecks=[...document.querySelectorAll('[data-save^="shop-"]')];
-  const exChecks=[...document.querySelectorAll('[data-save^="ex-"]')];
-  const mealDone=mealChecks.filter(x=>x.checked).length;
-  const shopDone=shopChecks.filter(x=>x.checked).length;
-  const exDone=exChecks.filter(x=>x.checked).length;
-  document.getElementById('mealStatus').textContent=`${mealDone} / ${mealChecks.length}`;
-  const mealPct=Math.round(mealDone/mealChecks.length*100)||0;
-  document.getElementById('mealPct').textContent=`${mealPct}% completato`;
-  document.getElementById('mealBar').style.width=mealPct+'%';
-  document.getElementById('shopStatus').textContent=`${shopDone} / ${shopChecks.length}`;
-  const shopPct=Math.round(shopDone/shopChecks.length*100)||0;
-  document.getElementById('shopPct').textContent=`${shopPct}% completato`;
-  document.getElementById('shopBar').style.width=shopPct+'%';
-  document.getElementById('exerciseStatus').textContent=`${exDone} / ${exChecks.length}`;
-  document.getElementById('exerciseBar').style.width=((exDone/exChecks.length*100)||0)+'%';
-  document.querySelectorAll('[data-today-key]').forEach(x=>x.checked=localStorage.getItem(x.dataset.todayKey)==='1');
+  const mealChecks=[...document.querySelectorAll('[data-save*="-meal-"]')],shopChecks=[...document.querySelectorAll('[data-save*="-shop-"]')],exChecks=[...document.querySelectorAll('[data-save*="-ex-"]')];
+  const mealDone=mealChecks.filter(x=>x.checked).length,shopDone=shopChecks.filter(x=>x.checked).length,exDone=exChecks.filter(x=>x.checked).length;
+  document.getElementById('mealStatus').textContent=`${mealDone} / ${mealChecks.length}`;const mp=Math.round(mealDone/mealChecks.length*100)||0;document.getElementById('mealPct').textContent=`${mp}% completato`;document.getElementById('mealBar').style.width=mp+'%';
+  document.getElementById('shopStatus').textContent=`${shopDone} / ${shopChecks.length}`;const sp=Math.round(shopDone/shopChecks.length*100)||0;document.getElementById('shopPct').textContent=`${sp}% completato`;document.getElementById('shopBar').style.width=sp+'%';
+  document.getElementById('exerciseStatus').textContent=`${exDone} / ${exChecks.length}`;document.getElementById('exerciseBar').style.width=((exDone/exChecks.length*100)||0)+'%';
 }
 
-renderToday();
+// Gestione / importazione programma
+const modal=document.getElementById('programModal'),pastePane=document.getElementById('pastePane'),editPane=document.getElementById('editPane');
+function openModal(mode){modal.hidden=false;pastePane.hidden=mode!=='paste';editPane.hidden=mode!=='edit';document.getElementById('modalTitle').textContent=mode==='paste'?'Incolla programma':'Modifica turni e attività'}
+function closeModal(){modal.hidden=true}
+document.getElementById('closeModal').onclick=closeModal;modal.addEventListener('click',e=>{if(e.target===modal)closeModal()});
+document.getElementById('importProgramBtn').onclick=()=>document.getElementById('programFile').click();
+document.getElementById('pasteProgramBtn').onclick=()=>{document.getElementById('programPaste').value='';openModal('paste')};
+document.getElementById('programFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{importProgram(JSON.parse(await f.text()))}catch(err){showStatus('Errore: '+err.message,true)}e.target.value=''});
+document.getElementById('confirmPaste').onclick=()=>{try{importProgram(JSON.parse(document.getElementById('programPaste').value));closeModal()}catch(err){alert('Importazione non riuscita: '+err.message)}};
+function importProgram(obj){
+  const old=program;program=sanitizeProgram(obj);
+  const archive=JSON.parse(localStorage.getItem(ARCHIVE_KEY)||'[]'); if(!archive.some(x=>x.id===old.id)) archive.push(old);localStorage.setItem(ARCHIVE_KEY,JSON.stringify(archive.slice(-20)));
+  saveProgram();renderProgram();showStatus(`Importato: ${program.weekName} ✓`);openTab('oggi');
+}
+function showStatus(msg,error=false){const x=document.getElementById('importStatus');x.innerHTML=msg;x.classList.toggle('error',error);setTimeout(()=>{x.classList.remove('error');x.innerHTML=`Programma attivo: <b>${program.weekName}</b>`},3500)}
 
-let weights=JSON.parse(localStorage.getItem('weights')||'[{"date":"2026-08-08","value":121}]');
-let activities=JSON.parse(localStorage.getItem('activities')||'[]');
-const wdate=document.getElementById('wdate');wdate.value=new Date().toISOString().slice(0,10);
-document.getElementById('adate').value=wdate.value;
+document.getElementById('exportProgramBtn').onclick=()=>downloadJSON(program,`Dieta-Conte-${program.startDate}.json`);
+function downloadJSON(obj,name){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+document.getElementById('duplicateProgramBtn').onclick=()=>{
+  const copy=clone(program),start=new Date(program.startDate+'T12:00:00');start.setDate(start.getDate()+7);const end=new Date(program.endDate+'T12:00:00');end.setDate(end.getDate()+7);
+  const shiftDate=d=>{const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+7);return x.toISOString().slice(0,10)};
+  copy.startDate=start.toISOString().slice(0,10);copy.endDate=end.toISOString().slice(0,10);copy.id=copy.startDate;copy.weekName='Nuova settimana';copy.days.forEach(d=>{d.date=shiftDate(d.date);d.label=formatDayLabel(d.date)});copy.workouts.forEach(w=>{w.date=shiftDate(w.date);w.label=formatDayLabel(w.date).toUpperCase()});
+  importProgram(copy);showStatus('Settimana duplicata: ora puoi importare o modificare il nuovo piano ✓');openTab('settimana');
+};
+
+document.getElementById('editProgramBtn').onclick=()=>{renderWeekEditor();openModal('edit')};
+function renderWeekEditor(){
+  const opts=['06–14','14–22','22–06','Riposo','Ferie','Altro'];
+  document.getElementById('weekEditor').innerHTML=program.days.map((d,i)=>{const w=(program.workouts||[]).find(x=>x.date===d.date)||{};return `<div class="editor-day"><b>${d.label}</b><select data-edit-shift="${i}">${opts.map(o=>`<option ${d.shift===o?'selected':''}>${o}</option>`).join('')}</select><input data-edit-type="${i}" placeholder="Allenamento / riposo" value="${w.type||''}"><input data-edit-duration="${i}" placeholder="Durata" value="${w.duration||''}"></div>`}).join('');
+}
+document.getElementById('saveWeekEdits').onclick=()=>{
+  const ws=[];program.days.forEach((d,i)=>{d.shift=document.querySelector(`[data-edit-shift="${i}"]`).value;const type=document.querySelector(`[data-edit-type="${i}"]`).value.trim(),duration=document.querySelector(`[data-edit-duration="${i}"]`).value.trim();if(type)ws.push({date:d.date,label:d.label.toUpperCase(),type,duration,icon:type.toLowerCase().includes('cyc')?'🚲':'👟'})});program.workouts=ws;saveProgram();closeModal();renderProgram();showStatus('Turni e attività aggiornati ✓')
+};
+
+// Peso e attività personali restano indipendenti dalle settimane
+let weights=JSON.parse(localStorage.getItem('weights')||'[{"date":"2026-08-08","value":121}]');let activities=JSON.parse(localStorage.getItem('activities')||'[]');
+const wdate=document.getElementById('wdate');wdate.value=new Date().toISOString().slice(0,10);document.getElementById('adate').value=wdate.value;
 document.getElementById('addWeight').addEventListener('click',()=>{const v=+document.getElementById('wvalue').value,d=wdate.value;if(!d||!v)return;weights.push({date:d,value:v});weights.sort((a,b)=>a.date.localeCompare(b.date));localStorage.setItem('weights',JSON.stringify(weights));renderWeights()});
-function renderWeights(){
-  document.getElementById('weights').innerHTML=weights.slice().reverse().map(w=>`<div class="row"><span>${w.date.split('-').reverse().join('/')}</span><b>${w.value.toFixed(1).replace('.',',')} kg</b></div>`).join('');
-  if(weights.length){
-    const latest=weights[weights.length-1].value;
-    const latestTxt=latest.toFixed(1).replace('.',',');
-    document.getElementById('homeWeight').textContent=latestTxt+' kg';
-    document.getElementById('topWeight').innerHTML=latestTxt+' <em>kg</em>';
-    const lost=121-latest;
-    document.getElementById('homeProgress').textContent=(lost>=0?lost:0).toFixed(1).replace('.',',')+' kg';
-    const remaining=Math.max(0,latest-115);
-    document.getElementById('kgRemaining').textContent='Mancano '+remaining.toFixed(1).replace('.',',')+' kg';
-    const d=weights[weights.length-1].date.split('-').reverse().join('/');
-    document.getElementById('lastWeightDate').textContent='Ultimo aggiornamento '+d;
-  }
-  drawChart();
-}
-function drawChart(){const c=document.getElementById('chart'),x=c.getContext('2d'),W=c.width,H=c.height;x.clearRect(0,0,W,H);x.strokeStyle='#334155';x.lineWidth=1;for(let i=0;i<5;i++){let y=25+i*(H-50)/4;x.beginPath();x.moveTo(35,y);x.lineTo(W-20,y);x.stroke()}if(!weights.length)return;const vals=weights.map(w=>w.value),min=Math.min(115,...vals)-1,max=Math.max(121,...vals)+1;const px=i=>35+(W-65)*(weights.length===1?.5:i/(weights.length-1));const py=v=>25+(max-v)/(max-min)*(H-50);x.strokeStyle='#22c55e';x.lineWidth=4;x.beginPath();weights.forEach((w,i)=>{i?x.lineTo(px(i),py(w.value)):x.moveTo(px(i),py(w.value))});x.stroke();x.fillStyle='#86efac';weights.forEach((w,i)=>{x.beginPath();x.arc(px(i),py(w.value),6,0,Math.PI*2);x.fill()});x.fillStyle='#94a3b8';x.font='18px system-ui';x.fillText('115 kg',40,py(115)-8)}
+function renderWeights(){document.getElementById('weights').innerHTML=weights.slice().reverse().map(w=>`<div class="row"><span>${w.date.split('-').reverse().join('/')}</span><b>${w.value.toFixed(1).replace('.',',')} kg</b></div>`).join('');if(weights.length){const latest=weights[weights.length-1].value,txt=latest.toFixed(1).replace('.',',');document.getElementById('homeWeight').textContent=txt+' kg';document.getElementById('topWeight').innerHTML=txt+' <em>kg</em>';const lost=121-latest;document.getElementById('homeProgress').textContent=(lost>=0?lost:0).toFixed(1).replace('.',',')+' kg';const remaining=Math.max(0,latest-(program.goalWeight||115));document.getElementById('kgRemaining').textContent='Mancano '+remaining.toFixed(1).replace('.',',')+' kg';document.getElementById('lastWeightDate').textContent='Ultimo aggiornamento '+weights[weights.length-1].date.split('-').reverse().join('/')}drawChart()}
+function drawChart(){const c=document.getElementById('chart'),x=c.getContext('2d'),W=c.width,H=c.height;x.clearRect(0,0,W,H);x.strokeStyle='#334155';x.lineWidth=1;for(let i=0;i<5;i++){let y=25+i*(H-50)/4;x.beginPath();x.moveTo(35,y);x.lineTo(W-20,y);x.stroke()}if(!weights.length)return;const vals=weights.map(w=>w.value),goal=program.goalWeight||115,min=Math.min(goal,...vals)-1,max=Math.max(121,...vals)+1,px=i=>35+(W-65)*(weights.length===1?.5:i/(weights.length-1)),py=v=>25+(max-v)/(max-min)*(H-50);x.strokeStyle='#22c55e';x.lineWidth=4;x.beginPath();weights.forEach((w,i)=>i?x.lineTo(px(i),py(w.value)):x.moveTo(px(i),py(w.value)));x.stroke();x.fillStyle='#86efac';weights.forEach((w,i)=>{x.beginPath();x.arc(px(i),py(w.value),6,0,Math.PI*2);x.fill()});x.fillStyle='#94a3b8';x.font='18px system-ui';x.fillText(goal+' kg',40,py(goal)-8)}
 document.getElementById('addActivity').addEventListener('click',()=>{const d=document.getElementById('adate').value,t=document.getElementById('atype').value,m=+document.getElementById('amin').value;if(!d||!m)return;activities.push({date:d,type:t,min:m});localStorage.setItem('activities',JSON.stringify(activities));renderActivities()});
 function renderActivities(){document.getElementById('activities').innerHTML=activities.slice().reverse().map(a=>`<div class="row"><span>${a.date.split('-').reverse().join('/')} · ${a.type}</span><b>${a.min} min</b></div>`).join('')}
-renderWeights();renderActivities();updateDashboard();
+
+renderProgram();renderWeights();renderActivities();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js');
