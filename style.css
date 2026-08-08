@@ -20,3 +20,34 @@ main{padding:0 20px 24px;max-width:920px;margin:auto}.panel{display:none}.panel.
  body{padding-bottom:76px}.app-header{padding:20px 14px 10px}.week-label{font-size:11px}h1{font-size:29px}.goal span{font-size:28px}.goal span em{font-size:15px}.goal small{font-size:12px}.top-nav{gap:6px;padding:8px 14px 14px}.top-nav .tab{font-size:11px;padding:11px 4px;gap:4px}.top-nav .tab span{display:none}main{padding:0 14px 16px}.hero{gap:8px}.hero-card{padding:14px 13px;min-height:124px;border-radius:18px}.hero-card small{font-size:10px}.hero-icon{width:35px;height:35px;border-radius:11px;font-size:18px}.hero-card strong{font-size:20px;margin:8px 0 13px}.hero-note{font-size:10px}.card,.day{border-radius:20px;padding:16px}.today-meal{grid-template-columns:36px 24px 1fr 11px;gap:9px;padding:13px 0}.today-meal:before{width:36px;height:36px;font-size:16px}.today-meal b{font-size:15px}.today-meal span{font-size:14px}.today-meal:after{font-size:23px}.status-grid{gap:8px}.mini-status{padding:12px}.status-icon{width:34px;height:34px;font-size:16px}.mini-status small{font-size:9px}.mini-status strong{font-size:19px}.info-card{gap:12px}.info-icon{width:43px;height:43px;border-radius:13px;font-size:20px}.info-card p{font-size:14px}.workouts-card{padding-bottom:12px}.workout-grid{grid-template-columns:repeat(4,1fr)}.workout-item{padding:3px 7px}.workout-item b{font-size:12px}.workout-item span{font-size:11px}.workout-item em{font-size:17px}.bottom-nav{display:grid;position:fixed;left:0;right:0;bottom:0;z-index:20;grid-template-columns:repeat(5,1fr);padding:7px max(4px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(4px,env(safe-area-inset-left));background:rgba(7,16,28,.96);backdrop-filter:blur(14px);border-top:1px solid #1c3045}.bottom-nav .tab{background:transparent;border:0;box-shadow:none;border-radius:12px;padding:5px 2px;display:flex;flex-direction:column;gap:1px;color:#8999ad}.bottom-nav .tab span{font-size:20px}.bottom-nav .tab small{font-size:10px}.bottom-nav .tab.active{color:var(--green);background:rgba(39,229,117,.07)}
 }
 @media(max-width:430px){.hero-note{display:none}.hero-card{min-height:105px}.status-grid{grid-template-columns:repeat(3,1fr)}.mini-status{min-width:0}.status-top{gap:5px}.status-icon{width:28px;height:28px;font-size:14px}.mini-status strong{font-size:17px}.workouts-card h2{font-size:17px}}
+
+/* RC4 — mobile polish: compact, readable, no overflow */
+.hero>* ,.status-grid>*{min-width:0}
+@media(max-width:640px){
+  .app-header{padding:18px 14px 9px;align-items:center}
+  .week-label{font-size:10.5px;white-space:nowrap}
+  h1{font-size:28px;margin-top:7px}
+  .goal span{font-size:27px;white-space:nowrap}.goal span em{font-size:14px}.goal small{font-size:11px;white-space:nowrap}
+  .top-nav{position:sticky;top:0;z-index:15;padding:7px 10px 12px;background:rgba(7,16,28,.94);backdrop-filter:blur(12px);gap:5px}
+  .top-nav .tab{min-width:0;font-size:11px;padding:11px 2px;border-radius:12px;white-space:nowrap}
+  main{padding:4px 10px 18px}
+  .hero{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:4px 0 12px}
+  .hero-card{padding:13px 10px;min-height:104px;border-radius:17px;overflow:hidden}
+  .hero-top{display:block}.hero-icon{display:none}.hero-card small{font-size:9.5px;white-space:nowrap}
+  .hero-card strong{font-size:19px;line-height:1.08;margin:10px 0 7px;white-space:nowrap}
+  .hero-note{display:block!important;font-size:9.5px;line-height:1.25;overflow-wrap:anywhere}
+  .card,.day{padding:15px;border-radius:18px;margin-bottom:12px}
+  .day-head{padding-bottom:10px}.day-head small{font-size:10px}.day-head h2{font-size:21px}.shift{padding:7px 10px;font-size:11px}
+  .today-meal{grid-template-columns:25px 1fr 9px;gap:10px;padding:12px 0}
+  .today-meal:before{display:none}.today-meal input{width:20px;height:20px;margin:0}.today-meal b{font-size:15px}.today-meal span{font-size:13.5px;line-height:1.32}.today-meal:after{font-size:20px}
+  .full-plan-btn{font-size:12px;padding:11px 8px;margin-top:11px}
+  .status-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:12px}
+  .mini-status{padding:12px 9px;border-radius:17px}.status-icon{display:none}.mini-status small{font-size:9px;white-space:nowrap}.mini-status strong{font-size:19px;margin:7px 0 5px;white-space:nowrap}.mini-status>span{font-size:9.5px}.progress-track{height:5px;margin:7px 0}
+  .info-card{padding:14px;gap:11px}.info-icon{width:38px;height:38px;font-size:18px}.info-card h2{font-size:16px;margin-bottom:6px}.info-card p{font-size:12.5px;line-height:1.35;margin-bottom:5px}
+  .workouts-card{padding:13px}.workouts-head{margin-bottom:10px}.workouts-card h2{font-size:16px}.workout-item{padding:2px 4px}.workout-item b{font-size:10.5px}.workout-item span{font-size:9.5px}.workout-item em{font-size:15px}
+}
+@media(max-width:370px){
+ .app-header{padding-left:10px;padding-right:10px}.week-label{font-size:9.5px}h1{font-size:25px}.goal span{font-size:24px}
+ .top-nav{padding-left:7px;padding-right:7px}.top-nav .tab{font-size:10px}
+ main{padding-left:7px;padding-right:7px}.hero{gap:5px}.hero-card{padding:11px 7px}.hero-card strong{font-size:17px}.hero-note{font-size:8.5px}
+}

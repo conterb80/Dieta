@@ -10,3 +10,7 @@ Novità RC2:
 - Tutte le funzioni RC1 restano presenti.
 
 I dati sono salvati localmente nel browser del dispositivo e non si sincronizzano automaticamente tra dispositivi.
+
+
+## RC4
+Restyling mobile compatto, correzione overflow/card, icone problematiche rimosse dalla navigazione superiore, cache PWA aggiornata.
