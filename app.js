@@ -178,9 +178,11 @@ document.getElementById('recipesFile').addEventListener('change',async e=>{const
 renderRecipes();
 
 
-// RC7 — Diario pressorio
+// RC7.1 — Diario pressorio rifinito
 const PRESSURE_KEY='dietaContePressureV1';
+const PRESSURE_RANGE_KEY='dietaContePressureRangeV1';
 let pressureReadings=JSON.parse(localStorage.getItem(PRESSURE_KEY)||'[]');
+let pressureRange=localStorage.getItem(PRESSURE_RANGE_KEY)||'7';
 function savePressure(){localStorage.setItem(PRESSURE_KEY,JSON.stringify(pressureReadings))}
 function pad2(n){return String(n).padStart(2,'0')}
 function localDateTimeValue(d=new Date()){return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`}
@@ -188,6 +190,17 @@ function isoDayFromLocal(dt){return String(dt||'').slice(0,10)}
 function fmtDateTime(dt){if(!dt)return '—';const [date,time='']=dt.split('T');return `${date.split('-').reverse().join('/')} ${time.slice(0,5)}`}
 function avgReadings(arr){if(!arr.length)return null;const avg=k=>Math.round(arr.reduce((s,x)=>s+Number(x[k]||0),0)/arr.length);return {sys:avg('sys'),dia:avg('dia'),pulse:avg('pulse')}}
 function initPressureDateTime(){const el=document.getElementById('bpDateTime');if(el&&!el.value)el.value=localDateTimeValue()}
+function filteredPressureReadings(){
+  if(pressureRange==='all')return pressureReadings.slice();
+  const days=Number(pressureRange)||7,cutoff=new Date();cutoff.setDate(cutoff.getDate()-(days-1));cutoff.setHours(0,0,0,0);
+  return pressureReadings.filter(x=>new Date(x.datetime)>=cutoff);
+}
+function filteredWeights(){
+  const list=(weights||[]).slice();if(pressureRange==='all')return list;
+  const days=Number(pressureRange)||7,cutoff=new Date();cutoff.setDate(cutoff.getDate()-(days-1));cutoff.setHours(0,0,0,0);
+  return list.filter(w=>new Date((w.date||'')+'T12:00')>=cutoff);
+}
+function renderPressureRange(){document.querySelectorAll('[data-bp-range]').forEach(b=>b.classList.toggle('active',b.dataset.bpRange===pressureRange))}
 function renderPressure(){
   pressureReadings.sort((a,b)=>String(a.datetime).localeCompare(String(b.datetime)));
   const latest=pressureReadings[pressureReadings.length-1];
@@ -203,13 +216,13 @@ function renderPressure(){
   else{hp.textContent='Nessuna misura';hm.textContent='Tocca per registrare la prima misurazione'}
   const history=document.getElementById('pressureHistory');
   if(!pressureReadings.length)history.innerHTML='<div class="pressure-empty">Nessuna misurazione registrata.</div>';
-  else history.innerHTML=`<table class="pressure-table"><thead><tr><th>Data / ora</th><th>Momento</th><th>Massima</th><th>Minima</th><th>Battiti</th><th>Nota</th><th></th></tr></thead><tbody>${pressureReadings.slice().reverse().map(r=>`<tr><td>${fmtDateTime(r.datetime)}</td><td>${escapeHtml(r.moment||'')}</td><td><b>${r.sys}</b></td><td><b>${r.dia}</b></td><td>${r.pulse}</td><td>${escapeHtml(r.note||'')}</td><td><button class="pressure-delete" data-bp-delete="${r.id}">×</button></td></tr>`).join('')}</tbody></table>`;
+  else history.innerHTML=pressureReadings.slice().reverse().map(r=>`<article class="pressure-history-item"><div class="pressure-history-main"><b>${fmtDateTime(r.datetime)}</b><span>${escapeHtml(r.moment||'Misura')}</span></div><div class="pressure-history-vitals"><strong>${r.sys} / ${r.dia}</strong><span>${r.pulse} bpm</span></div><div class="pressure-history-actions"><button class="pressure-delete" aria-label="Elimina misurazione" data-bp-delete="${r.id}">×</button></div>${r.note?`<div class="pressure-history-note">${escapeHtml(r.note)}</div>`:''}</article>`).join('');
   document.querySelectorAll('[data-bp-delete]').forEach(b=>b.onclick=()=>{if(confirm('Eliminare questa misurazione?')){pressureReadings=pressureReadings.filter(x=>x.id!==b.dataset.bpDelete);savePressure();renderPressure()}});
-  drawPressureChart();drawPressureWeightChart();initPressureDateTime();
+  renderPressureRange();drawPressureChart();drawPressureWeightChart();initPressureDateTime();
 }
 function drawPressureChart(){
   const c=document.getElementById('pressureChart');if(!c)return;const x=c.getContext('2d'),W=c.width,H=c.height;x.clearRect(0,0,W,H);x.fillStyle='#081421';x.fillRect(0,0,W,H);
-  const data=pressureReadings.slice(-30);if(!data.length){x.fillStyle='#94a3b8';x.font='18px system-ui';x.fillText('Registra una misura per iniziare il grafico',32,H/2);return}
+  const data=filteredPressureReadings();if(!data.length){x.fillStyle='#94a3b8';x.font='18px system-ui';x.fillText('Nessuna misura nell’intervallo selezionato',32,H/2);return}
   const all=data.flatMap(r=>[r.sys,r.dia,r.pulse]);let min=Math.min(...all)-10,max=Math.max(...all)+10;min=Math.max(20,min);if(max-min<50){max+=25;min-=25}
   const L=44,R=18,T=24,B=34,px=i=>L+(W-L-R)*(data.length===1?.5:i/(data.length-1)),py=v=>T+(max-v)/(max-min)*(H-T-B);
   x.strokeStyle='#25384c';x.lineWidth=1;x.fillStyle='#7f91a6';x.font='12px system-ui';for(let i=0;i<5;i++){const val=Math.round(max-i*(max-min)/4),y=py(val);x.beginPath();x.moveTo(L,y);x.lineTo(W-R,y);x.stroke();x.fillText(String(val),5,y+4)}
@@ -218,10 +231,13 @@ function drawPressureChart(){
 }
 function drawPressureWeightChart(){
   const wrap=document.getElementById('pressureWeightCompare'),toggle=document.getElementById('showWeightCompare');if(!wrap||!toggle)return;wrap.hidden=!toggle.checked;if(!toggle.checked)return;
-  const c=document.getElementById('pressureWeightChart'),x=c.getContext('2d'),W=c.width,H=c.height;x.clearRect(0,0,W,H);x.fillStyle='#081421';x.fillRect(0,0,W,H);const data=(weights||[]).slice(-30);if(!data.length){x.fillStyle='#94a3b8';x.font='16px system-ui';x.fillText('Nessuna pesata disponibile',28,H/2);return}
+  const c=document.getElementById('pressureWeightChart'),x=c.getContext('2d'),W=c.width,H=c.height;x.clearRect(0,0,W,H);x.fillStyle='#081421';x.fillRect(0,0,W,H);const data=filteredWeights();if(!data.length){x.fillStyle='#94a3b8';x.font='16px system-ui';x.fillText('Nessuna pesata nell’intervallo selezionato',28,H/2);return}
   const vals=data.map(w=>w.value),min=Math.min(...vals)-.5,max=Math.max(...vals)+.5,L=46,R=18,T=18,B=30,px=i=>L+(W-L-R)*(data.length===1?.5:i/(data.length-1)),py=v=>T+(max-v)/(max-min||1)*(H-T-B);x.strokeStyle='#22c55e';x.lineWidth=3;x.beginPath();data.forEach((w,i)=>i?x.lineTo(px(i),py(w.value)):x.moveTo(px(i),py(w.value)));x.stroke();x.fillStyle='#86efac';data.forEach((w,i)=>{x.beginPath();x.arc(px(i),py(w.value),4,0,Math.PI*2);x.fill()});x.fillStyle='#94a3b8';x.font='12px system-ui';x.fillText(max.toFixed(1)+' kg',5,T+5);x.fillText(min.toFixed(1)+' kg',5,H-B)
 }
-document.getElementById('addPressure').onclick=()=>{const datetime=document.getElementById('bpDateTime').value,sys=+document.getElementById('bpSys').value,dia=+document.getElementById('bpDia').value,pulse=+document.getElementById('bpPulse').value,moment=document.getElementById('bpMoment').value,note=document.getElementById('bpNote').value.trim();if(!datetime||!sys||!dia||!pulse){alert('Inserisci data/ora, massima, minima e battiti.');return}pressureReadings.push({id:'bp-'+Date.now().toString(36),datetime,sys,dia,pulse,moment,note});savePressure();document.getElementById('bpSys').value='';document.getElementById('bpDia').value='';document.getElementById('bpPulse').value='';document.getElementById('bpNote').value='';document.getElementById('bpDateTime').value=localDateTimeValue();renderPressure()};
+function clearPressureForm(){document.getElementById('bpSys').value='';document.getElementById('bpDia').value='';document.getElementById('bpPulse').value='';document.getElementById('bpNote').value='';document.getElementById('bpDateTime').value=localDateTimeValue();document.getElementById('bpSys').focus()}
+document.getElementById('addPressure').onclick=()=>{const datetime=document.getElementById('bpDateTime').value,sys=+document.getElementById('bpSys').value,dia=+document.getElementById('bpDia').value,pulse=+document.getElementById('bpPulse').value,moment=document.getElementById('bpMoment').value,note=document.getElementById('bpNote').value.trim();if(!datetime||!sys||!dia||!pulse){alert('Inserisci data/ora, massima, minima e battiti.');return}pressureReadings.push({id:'bp-'+Date.now().toString(36),datetime,sys,dia,pulse,moment,note});savePressure();clearPressureForm();renderPressure()};
+document.getElementById('newPressure').onclick=clearPressureForm;
 document.getElementById('showWeightCompare').onchange=drawPressureWeightChart;
+document.querySelectorAll('[data-bp-range]').forEach(b=>b.onclick=()=>{pressureRange=b.dataset.bpRange;localStorage.setItem(PRESSURE_RANGE_KEY,pressureRange);renderPressureRange();drawPressureChart();drawPressureWeightChart()});
 document.getElementById('exportPressureCsv').onclick=()=>{if(!pressureReadings.length){alert('Nessuna misurazione da esportare.');return}const rows=[['Data e ora','Momento','Massima mmHg','Minima mmHg','Battiti bpm','Note'],...pressureReadings.map(r=>[fmtDateTime(r.datetime),r.moment,r.sys,r.dia,r.pulse,r.note||''])];const csv='\ufeff'+rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='Diario-Pressorio-Dieta-Conte.csv';a.click();URL.revokeObjectURL(a.href)};
 renderPressure();

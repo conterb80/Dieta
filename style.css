@@ -78,3 +78,33 @@ main{padding:0 20px 24px;max-width:920px;margin:auto}.panel{display:none}.panel.
  .pressure-summary{gap:7px}.pressure-stat{padding:11px 6px}.pressure-stat strong{font-size:17px}.pressure-stat small{font-size:8px}
  .pressure-chart-head button{font-size:10px;padding:9px}.pressure-legend{font-size:10px;gap:9px}
 }
+
+
+/* RC7.1 — Rifinitura Diario Pressorio */
+.pressure-form{grid-template-columns:1.35fr .85fr 1fr 1fr 1fr;align-items:end}
+.pressure-form input,.pressure-form select{width:100%;min-width:0}
+.pressure-form-actions{grid-column:1/-1;display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.pressure-form-actions button{border-radius:12px;padding:13px;font-weight:900;cursor:pointer}
+.pressure-new{border:1px solid #31506e;background:#12243a;color:#eaf2fb}
+.pressure-chart-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+.pressure-range{display:flex;gap:6px;padding:4px;background:#091725;border:1px solid #1f354b;border-radius:12px}
+.pressure-range button{border:0;background:transparent;color:#8fa2b7;border-radius:9px;padding:7px 10px;font-size:10px;font-weight:850;white-space:nowrap;cursor:pointer}
+.pressure-range button.active{background:#17324a;color:#eaf2fb;box-shadow:inset 0 0 0 1px #31506e}
+.pressure-history{display:grid;gap:9px;overflow:visible}
+.pressure-history-item{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr) auto;gap:10px;align-items:center;padding:12px 13px;border:1px solid #263b50;background:#091725;border-radius:14px}
+.pressure-history-main{min-width:0}.pressure-history-main b{display:block;font-size:17px;line-height:1.15}.pressure-history-main span{display:block;color:var(--muted);font-size:11px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pressure-history-vitals{text-align:right}.pressure-history-vitals strong{display:block;font-size:18px}.pressure-history-vitals span{display:block;color:#aab8c8;font-size:11px;margin-top:3px}
+.pressure-history-actions{display:flex;align-items:center}.pressure-delete{font-size:16px;line-height:1;width:34px;height:34px;padding:0}
+.pressure-history-note{grid-column:1/-1;color:#9fb0c4;font-size:11px;padding-top:8px;border-top:1px solid #1c3044}
+@media(max-width:640px){
+ .pressure-form{grid-template-columns:1fr 1fr;gap:11px 10px}
+ .pressure-form .bp-datetime,.pressure-form .bp-moment,.pressure-form .bp-pulse,.pressure-form .pressure-note,.pressure-form-actions{grid-column:1/-1}
+ .pressure-form .bp-sys{grid-column:1}.pressure-form .bp-dia{grid-column:2}
+ .pressure-form-actions{grid-template-columns:1fr 1fr}
+ .pressure-chart-toolbar{align-items:flex-start;flex-direction:column;gap:8px}.pressure-range{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}.pressure-range button{padding:8px 5px}
+ .pressure-history-item{grid-template-columns:minmax(0,1fr) auto auto;padding:11px 10px;gap:8px}
+ .pressure-history-main b{font-size:15px}.pressure-history-vitals strong{font-size:16px}.pressure-history-main span,.pressure-history-vitals span{font-size:10px}
+}
+@media(max-width:390px){
+ .pressure-form-actions{grid-template-columns:1fr}.pressure-new{padding:11px!important}
+}

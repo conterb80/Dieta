@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#08111d">
   <title>Dieta Conte</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="style.css?v=rc7">
+  <link rel="stylesheet" href="style.css?v=rc71">
 </head>
 <body>
 <header class="app-header">
@@ -153,13 +153,16 @@
     <p class="muted">Registra le misurazioni e osserva l'andamento nel tempo. Il peso resta separato e può essere mostrato solo quando vuoi confrontarlo.</p>
 
     <div class="pressure-form">
-      <label><span>Data e ora</span><input id="bpDateTime" type="datetime-local"></label>
-      <label><span>Momento</span><select id="bpMoment"><option>Mattino</option><option>Sera</option><option>Altro</option></select></label>
-      <label><span>Massima</span><input id="bpSys" type="number" min="60" max="260" inputmode="numeric" placeholder="mmHg"></label>
-      <label><span>Minima</span><input id="bpDia" type="number" min="30" max="180" inputmode="numeric" placeholder="mmHg"></label>
-      <label><span>Battiti</span><input id="bpPulse" type="number" min="30" max="220" inputmode="numeric" placeholder="bpm"></label>
+      <label class="bp-datetime"><span>Data e ora</span><input id="bpDateTime" type="datetime-local"></label>
+      <label class="bp-moment"><span>Momento</span><select id="bpMoment"><option>Mattino</option><option>Sera</option><option>Altro</option></select></label>
+      <label class="bp-sys"><span>Massima</span><input id="bpSys" type="number" min="60" max="260" inputmode="numeric" placeholder="mmHg"></label>
+      <label class="bp-dia"><span>Minima</span><input id="bpDia" type="number" min="30" max="180" inputmode="numeric" placeholder="mmHg"></label>
+      <label class="bp-pulse"><span>Battiti</span><input id="bpPulse" type="number" min="30" max="220" inputmode="numeric" placeholder="bpm"></label>
       <label class="pressure-note"><span>Nota facoltativa</span><input id="bpNote" type="text" maxlength="120" placeholder="es. a riposo, dopo il turno…"></label>
-      <button id="addPressure" class="primary-action pressure-save">Salva misurazione</button>
+      <div class="pressure-form-actions">
+        <button id="addPressure" class="primary-action pressure-save">Salva misurazione</button>
+        <button id="newPressure" class="pressure-new" type="button">+ Nuova misura</button>
+      </div>
     </div>
   </div>
 
@@ -174,7 +177,14 @@
       <div><small>ANDAMENTO</small><h2>Pressione e battiti</h2></div>
       <button id="exportPressureCsv">Esporta CSV</button>
     </div>
-    <div class="pressure-legend"><span class="sys-dot">● Massima</span><span class="dia-dot">● Minima</span><span class="pulse-dot">● Battiti</span></div>
+    <div class="pressure-chart-toolbar">
+      <div class="pressure-legend"><span class="sys-dot">● Massima</span><span class="dia-dot">● Minima</span><span class="pulse-dot">● Battiti</span></div>
+      <div class="pressure-range" aria-label="Intervallo grafico">
+        <button class="active" data-bp-range="7">7 giorni</button>
+        <button data-bp-range="30">30 giorni</button>
+        <button data-bp-range="all">Tutto</button>
+      </div>
+    </div>
     <canvas id="pressureChart" width="720" height="320" aria-label="Grafico diario pressorio"></canvas>
     <label class="weight-toggle"><input type="checkbox" id="showWeightCompare"> Mostra anche il peso per confronto</label>
     <div id="pressureWeightCompare" hidden>
@@ -267,6 +277,6 @@
   </div>
 </div>
 
-<script src="app.js?v=rc7"></script>
+<script src="app.js?v=rc71"></script>
 </body>
 </html>

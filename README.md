@@ -15,3 +15,11 @@ Novità RC7:
 - cache PWA aggiornata a RC7.
 
 Per aggiornare su GitHub Pages: sostituire i file della RC precedente con quelli di questo pacchetto.
+
+## RC7.1 — Rifinitura Diario Pressorio
+- Modulo pressione riallineato: data e momento a tutta larghezza su mobile, Massima/Minima perfettamente affiancate, battiti e nota a tutta larghezza.
+- Pulsante “+ Nuova misura” per facilitare rilevazioni consecutive.
+- Storico ottimizzato per telefono con card compatte, senza scorrimento orizzontale.
+- Filtri grafico: 7 giorni / 30 giorni / Tutto.
+- Il confronto peso resta opzionale e segue lo stesso intervallo selezionato.
+- Cache PWA aggiornata a RC7.1.
