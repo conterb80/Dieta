@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#08111d">
   <title>Dieta Conte</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="style.css?v=rc6">
+  <link rel="stylesheet" href="style.css?v=rc7">
 </head>
 <body>
 <header class="app-header">
@@ -25,6 +25,7 @@
   <button class="tab" data-tab="settimana">Settimana</button>
   <button class="tab" data-tab="spesa">Spesa</button>
   <button class="tab" data-tab="peso">Peso</button>
+  <button class="tab" data-tab="pressione">Pressione</button>
   <button class="tab" data-tab="attivita">Attività</button>
   <button class="tab" data-tab="ricette">Ricette</button>
 </nav>
@@ -47,6 +48,16 @@
       <strong id="homeProgress">0,0 kg</strong>
       <span class="hero-note">Percorso iniziato 💪</span>
     </div>
+  </div>
+
+  <div class="card pressure-home-card tab-link" data-go="pressione">
+    <div class="pressure-home-icon">♥</div>
+    <div class="pressure-home-copy">
+      <small>PRESSIONE OGGI</small>
+      <strong id="homePressure">Nessuna misura</strong>
+      <span id="homePressureMeta">Tocca per registrare la prima misurazione</span>
+    </div>
+    <span class="pressure-home-action">+ Misura</span>
   </div>
 
   <div class="card today-card">
@@ -136,6 +147,48 @@
   </div>
 </section>
 
+<section id="pressione" class="panel">
+  <div class="card pressure-card">
+    <div class="section-heading"><div><small>DIARIO PRESSORIO</small><h2>Pressione</h2></div><span class="section-icon red">♥</span></div>
+    <p class="muted">Registra le misurazioni e osserva l'andamento nel tempo. Il peso resta separato e può essere mostrato solo quando vuoi confrontarlo.</p>
+
+    <div class="pressure-form">
+      <label><span>Data e ora</span><input id="bpDateTime" type="datetime-local"></label>
+      <label><span>Momento</span><select id="bpMoment"><option>Mattino</option><option>Sera</option><option>Altro</option></select></label>
+      <label><span>Massima</span><input id="bpSys" type="number" min="60" max="260" inputmode="numeric" placeholder="mmHg"></label>
+      <label><span>Minima</span><input id="bpDia" type="number" min="30" max="180" inputmode="numeric" placeholder="mmHg"></label>
+      <label><span>Battiti</span><input id="bpPulse" type="number" min="30" max="220" inputmode="numeric" placeholder="bpm"></label>
+      <label class="pressure-note"><span>Nota facoltativa</span><input id="bpNote" type="text" maxlength="120" placeholder="es. a riposo, dopo il turno…"></label>
+      <button id="addPressure" class="primary-action pressure-save">Salva misurazione</button>
+    </div>
+  </div>
+
+  <div class="pressure-summary">
+    <div class="pressure-stat"><small>ULTIMA</small><strong id="bpLast">— / —</strong><span>mmHg</span></div>
+    <div class="pressure-stat"><small>MEDIA OGGI</small><strong id="bpTodayAvg">— / —</strong><span>mmHg</span></div>
+    <div class="pressure-stat"><small>MEDIA 7 GIORNI</small><strong id="bpWeekAvg">— / —</strong><span>mmHg</span></div>
+  </div>
+
+  <div class="card pressure-chart-card">
+    <div class="pressure-chart-head">
+      <div><small>ANDAMENTO</small><h2>Pressione e battiti</h2></div>
+      <button id="exportPressureCsv">Esporta CSV</button>
+    </div>
+    <div class="pressure-legend"><span class="sys-dot">● Massima</span><span class="dia-dot">● Minima</span><span class="pulse-dot">● Battiti</span></div>
+    <canvas id="pressureChart" width="720" height="320" aria-label="Grafico diario pressorio"></canvas>
+    <label class="weight-toggle"><input type="checkbox" id="showWeightCompare"> Mostra anche il peso per confronto</label>
+    <div id="pressureWeightCompare" hidden>
+      <div class="compare-head"><small>CONFRONTO OPZIONALE</small><strong>Trend peso</strong></div>
+      <canvas id="pressureWeightChart" width="720" height="180" aria-label="Grafico peso opzionale"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-heading"><div><small>STORICO</small><h2>Misurazioni</h2></div><span class="section-icon red">≡</span></div>
+    <div id="pressureHistory" class="pressure-history"></div>
+  </div>
+</section>
+
 <section id="attivita" class="panel">
   <div class="card">
     <div class="section-heading"><div><small>PROGRAMMA</small><h2>Esercizio</h2></div><span class="section-icon purple">🏋</span></div>
@@ -174,6 +227,7 @@
   <button class="tab" data-tab="settimana"><span>▣</span><small>Settimana</small></button>
   <button class="tab" data-tab="spesa"><span>🛒</span><small>Spesa</small></button>
   <button class="tab" data-tab="peso"><span>⚖</span><small>Peso</small></button>
+  <button class="tab" data-tab="pressione"><span>♥</span><small>Pressione</small></button>
   <button class="tab" data-tab="attivita"><span>🏋</span><small>Attività</small></button>
   <button class="tab" data-tab="ricette"><span>♨</span><small>Ricette</small></button>
 </nav>
@@ -213,6 +267,6 @@
   </div>
 </div>
 
-<script src="app.js?v=rc6"></script>
+<script src="app.js?v=rc7"></script>
 </body>
 </html>
