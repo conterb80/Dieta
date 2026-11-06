@@ -194,7 +194,7 @@ function renderExerciseProgram(){
   document.getElementById('exerciseProgram').innerHTML=details+(notes.length?notes.map(n=>`<p class="muted">${n}</p>`).join(''):'');
 }
 function restoreChecks(){
-  document.querySelectorAll('[data-save]').forEach(x=>{x.checked=localStorage.getItem(x.dataset.save)==='1';x.onchange=()=>{localStorage.setItem(x.dataset.save,x.checked?'1':'0');updateDashboard()}});
+  document.querySelectorAll('[data-save]').forEach(x=>{if(x.closest('#shopping'))return;x.checked=localStorage.getItem(x.dataset.save)==='1';x.onchange=()=>{localStorage.setItem(x.dataset.save,x.checked?'1':'0');updateDashboard()}});
 }
 function currentPlanIndex(){
   const today=new Date(); const start=new Date(program.startDate+'T00:00:00'); const diff=Math.floor((today-start)/86400000);
