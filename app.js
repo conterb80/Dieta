@@ -84,9 +84,104 @@ function renderDays(){
   const days=document.getElementById('days');days.innerHTML='';
   program.days.forEach((d,i)=>{const box=document.createElement('div');box.className='day';box.innerHTML=`<div class="day-head"><h3>${d.label}</h3><span class="shift">${d.shift}</span></div>`+d.meals.map((m,j)=>`<div class="meal"><b>${m[0]}</b>${m[1]}<label class="check"><input type="checkbox" data-save="${mealKey(i,j)}"> Fatto</label></div>`).join('');days.appendChild(box)});
 }
+// RC9 · Lista spesa flessibile: 3 acquisti, vista totale, quantità e riacquisto.
+let shoppingView='1';
+const SHOP_VIEW_KEY='dietaConteShopView';
+const SHOP_CUSTOM_KEY=()=>prefix()+'-custom-shopping';
+const SHOP_TEXT_KEY=(g,i)=>shopKey(g,i)+'-text';
+const SHOP_REBUY_KEY=(g,i)=>shopKey(g,i)+'-rebuy';
+function shopTrips(){
+  return [
+    {id:'1',label:'Spesa 1',date:'Dom 8 · primi 3 giorni'},
+    {id:'2',label:'Spesa 2',date:'Gio 12 · metà settimana'},
+    {id:'3',label:'Spesa 3',date:'Sab 14 · ultimi pasti'}
+  ];
+}
+function shopTrip(group,item){
+  const s=(group+' '+item).toLowerCase();
+  if(/macinato|fagioli|minestrone/.test(s))return '3';
+  if(/funghi|finocchi|ceci|insalata|ricotta|pesce bianco/.test(s))return '2';
+  if(/merluzzo/.test(s))return '1';
+  if(/pollo/.test(s))return '1';
+  if(/yogurt|latte|pane|frutta di stagione/.test(s))return '1';
+  return '1';
+}
+function shoppingItems(){
+  const rows=[];
+  Object.entries(program.shopping||{}).forEach(([group,items])=>items.forEach((item,i)=>{
+    const key=shopKey(group,i);
+    const text=localStorage.getItem(SHOP_TEXT_KEY(group,i))||item;
+    rows.push({key,group,text,trip:shopTrip(group,item),rebuyKey:SHOP_REBUY_KEY(group,i)});
+  }));
+  let extra=[];try{extra=JSON.parse(localStorage.getItem(SHOP_CUSTOM_KEY())||'[]')}catch(e){}
+  extra.forEach(x=>rows.push({key:prefix()+'-custom-'+x.id,group:'Aggiunti da te',text:x.text,trip:x.trip,rebuyKey:prefix()+'-custom-rebuy-'+x.id,custom:true,id:x.id}));
+  return rows;
+}
 function renderShopping(){
-  const shop=document.getElementById('shopping');shop.innerHTML='';
-  Object.entries(program.shopping||{}).forEach(([g,items])=>{shop.insertAdjacentHTML('beforeend',`<div class="shop-group">${g}</div>`);items.forEach((x,i)=>shop.insertAdjacentHTML('beforeend',`<label class="check"><input type="checkbox" data-save="${shopKey(g,i)}"> ${x}</label>`))});
+  const host=document.getElementById('shopping');
+  if(!host)return;
+  shoppingView=localStorage.getItem(SHOP_VIEW_KEY)||shoppingView;
+  const trips=shopTrips();
+  const rows=shoppingItems();
+  const visible=shoppingView==='all'?rows:rows.filter(x=>x.trip===shoppingView);
+  const completed=visible.filter(x=>localStorage.getItem(x.key)==='1'&&localStorage.getItem(x.rebuyKey)!=='1').length;
+  host.innerHTML='';
+  const tabs=document.createElement('div');
+  tabs.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin:12px 0';
+  [...trips,{id:'all',label:'Tutta la settimana',date:''}].forEach(t=>{
+    const b=document.createElement('button');b.type='button';b.textContent=t.label;
+    b.style.cssText='border-radius:12px;padding:9px 12px;border:1px solid #b4bdc8;font-weight:700;cursor:pointer;'+(shoppingView===t.id?'background:#2563eb;color:white;':'background:transparent;color:inherit;');
+    b.onclick=()=>{shoppingView=t.id;localStorage.setItem(SHOP_VIEW_KEY,t.id);renderShopping()};
+    tabs.appendChild(b);
+  });
+  host.appendChild(tabs);
+  const intro=document.createElement('p');intro.className='muted';
+  intro.textContent=(shoppingView==='all'?'Tutti gli acquisti della settimana':trips.find(t=>t.id===shoppingView)?.date||'')+' · '+completed+'/'+visible.length+' acquistati';
+  host.appendChild(intro);
+  let lastGroup='';
+  visible.forEach(x=>{
+    if(x.group!==lastGroup){
+      lastGroup=x.group;const h=document.createElement('div');h.className='shop-group';h.textContent=x.group;host.appendChild(h);
+    }
+    const wrap=document.createElement('div');wrap.style.cssText='display:flex;align-items:center;gap:7px;padding:8px 0;border-bottom:1px solid rgba(120,120,120,.14);flex-wrap:wrap';
+    const check=document.createElement('input');check.type='checkbox';check.dataset.save=x.key;
+    const bought=localStorage.getItem(x.key)==='1',rebuy=localStorage.getItem(x.rebuyKey)==='1';
+    check.checked=bought&&!rebuy;
+    check.onchange=()=>{localStorage.setItem(x.key,check.checked?'1':'0');localStorage.removeItem(x.rebuyKey);renderShopping();updateDashboard()};
+    const label=document.createElement('span');label.textContent=x.text;label.style.cssText='flex:1;min-width:130px;'+(check.checked?'text-decoration:line-through;opacity:.65;':'');
+    const edit=document.createElement('button');edit.type='button';edit.textContent='✎';edit.title='Modifica quantità o prodotto';edit.setAttribute('aria-label','Modifica '+x.text);
+    edit.style.cssText='padding:5px 8px;border:1px solid #aaa;border-radius:8px;background:transparent;color:inherit';
+    edit.onclick=()=>{
+      const value=prompt('Modifica prodotto e quantità:',x.text);
+      if(value===null||!value.trim())return;
+      if(x.custom){
+        let extra=JSON.parse(localStorage.getItem(SHOP_CUSTOM_KEY())||'[]');
+        extra=extra.map(y=>y.id===x.id?{...y,text:value.trim()}:y);
+        localStorage.setItem(SHOP_CUSTOM_KEY(),JSON.stringify(extra));
+      }else{
+        const match=Object.entries(program.shopping).flatMap(([g,a])=>a.map((v,i)=>({g,i,key:shopKey(g,i)}))).find(y=>y.key===x.key);
+        if(match)localStorage.setItem(SHOP_TEXT_KEY(match.g,match.i),value.trim());
+      }
+      renderShopping();
+    };
+    const rebuyBtn=document.createElement('button');rebuyBtn.type='button';rebuyBtn.textContent='↻';rebuyBtn.title='Da ricomprare';rebuyBtn.setAttribute('aria-label','Da ricomprare: '+x.text);
+    rebuyBtn.style.cssText='padding:5px 8px;border:1px solid #aaa;border-radius:8px;background:transparent;color:inherit';
+    rebuyBtn.onclick=()=>{localStorage.setItem(x.rebuyKey,'1');localStorage.setItem(x.key,'0');renderShopping();updateDashboard()};
+    wrap.append(check,label,edit,rebuyBtn);host.appendChild(wrap);
+  });
+  const add=document.createElement('button');add.type='button';add.textContent='+ Aggiungi prodotto';
+  add.style.cssText='margin-top:14px;padding:10px 12px;border-radius:10px;border:1px solid #aaa;background:transparent;color:inherit;font-weight:700';
+  add.onclick=()=>{
+    const value=prompt('Cosa vuoi aggiungere alla spesa? (prodotto e quantità)');
+    if(!value||!value.trim())return;
+    const extra=JSON.parse(localStorage.getItem(SHOP_CUSTOM_KEY())||'[]');
+    extra.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),text:value.trim(),trip:shoppingView==='all'?'1':shoppingView});
+    localStorage.setItem(SHOP_CUSTOM_KEY(),JSON.stringify(extra));renderShopping();updateDashboard();
+  };
+  host.appendChild(add);
+  const hint=document.createElement('p');hint.className='muted';hint.style.marginTop='10px';
+  hint.textContent='✎ modifica quantità · ↻ rimetti da comprare. Le spunte valgono anche nella lista completa. I prodotti di dispensa vanno acquistati solo se mancano.';
+  host.appendChild(hint);
 }
 function renderHomeWorkouts(){
   const box=document.getElementById('homeWorkouts');box.innerHTML='';
