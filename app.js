@@ -32,11 +32,24 @@ const DEFAULT_PROGRAM={
   exerciseNotes:['Camminata: passo comodo, devi riuscire a parlare.','Cyclette: resistenza leggera, ritmo continuo e confortevole.','Recupero: nei giorni non programmati nessun allenamento obbligatorio.']
 };
 
+const NOV_2026_PROGRAM={"schema":"dieta-conte-v1","id":"2026-W46","weekName":"Settimana 9–15 novembre 2026","startDate":"2026-11-09","endDate":"2026-11-15","goalWeight":115,"rules":"Acqua come bevanda principale; caffè senza zucchero; limitare il sale; niente alcol. Spuntini secondo fame e turni.","rulesNote":"Quantità indicative, da personalizzare con il professionista sanitario. Preparazioni in anticipo e porzioni da congelare quando necessario.","days":[{"date":"2026-11-09","label":"Lun 9","shift":"Riposo","meals":[["Colazione","Yogurt bianco 200 g + 1 frutto + noci 15 g"],["Pranzo","Pasta integrale 80 g con broccoli, olio EVO 10 g e parmigiano 10 g"],["Spuntino","1 frutto oppure yogurt"],["Cena","Pollo 160 g al forno, cavolfiore 200 g e patate 180 g"]]},{"date":"2026-11-10","label":"Mar 10","shift":"22–06","meals":[["Colazione","Pane integrale 60 g, ricotta 60 g e 1 frutto"],["Pranzo","Riso 75 g con pollo 130 g, zucchine saltate e carote"],["Spuntino","1 frutto"],["Cena prima del turno","Merluzzo 170 g al forno, patate 180 g e carote"],["Durante la notte, se fame","Yogurt bianco e 1 frutto oppure piccolo panino integrale"]]},{"date":"2026-11-11","label":"Mer 11","shift":"22–06","meals":[["Dopo il turno, se fame","Latte o yogurt leggero, poi riposo"],["Al risveglio","Latte 200 ml, 4 fette biscottate integrali e poca confettura"],["Pranzo","Zuppa con lenticchie secche 75 g, verdure e pane integrale 40 g"],["Cena prima del turno","Frittata di 2 uova con zucchine saltate, finocchi e pane 50 g"],["Durante la notte, se fame","Yogurt naturale oppure frutta"]]},{"date":"2026-11-12","label":"Gio 12","shift":"Riposo","meals":[["Dopo il turno","Colazione leggera solo se fame, poi riposo"],["Al risveglio","Yogurt bianco 200 g + 1 frutto + noci 15 g"],["Pranzo","Pasta 80 g con cavolfiore, olio EVO e poco pangrattato tostato"],["Spuntino","1 frutto"],["Cena","Ceci cotti 200 g in umido con pomodoro e verdure, pane integrale 40 g"]]},{"date":"2026-11-13","label":"Ven 13","shift":"14–22","meals":[["Colazione","Pane integrale 60 g, ricotta 60 g e 1 frutto"],["Pranzo prima del lavoro","Risotto con riso 80 g, funghi, brodo poco salato e parmigiano"],["Spuntino al lavoro","1 frutto o yogurt"],["Cena al lavoro","Pollo 160 g con verdure al forno e pane 60 g, pronto da scaldare"]]},{"date":"2026-11-14","label":"Sab 14","shift":"14–22","meals":[["Colazione","Latte 200 ml, 4 fette biscottate integrali e poca confettura"],["Pranzo prima del lavoro","Piadina integrale fatta in casa circa 90 g, pollo 120 g, insalata e salsa allo yogurt"],["Spuntino al lavoro","1 frutto"],["Cena al lavoro","Pesce bianco 170 g con patate 180 g e finocchi, pronto da scaldare"]]},{"date":"2026-11-15","label":"Dom 15","shift":"Riposo","meals":[["Colazione","Yogurt bianco 200 g + 1 frutto + noci 15 g"],["Pranzo","Pasta 80 g con ragù di macinato magro 100 g e pomodoro"],["Spuntino","Frutta oppure yogurt"],["Cena","Minestrone di verdure con fagioli cotti 180 g e pane integrale 40 g"]]}],"shopping":{"Carne, pesce e proteine":["Pollo · circa 800 g","Merluzzo o pesce bianco · circa 400 g","Macinato magro · 150 g","Uova · 2","Lenticchie secche · 100 g","Ceci già cotti · 200 g","Fagioli già cotti · 180 g"],"Latticini":["Yogurt bianco naturale · circa 1,5 kg","Ricotta · 120–150 g","Latte · 1 litro","Parmigiano · 50 g"],"Cereali e pane":["Pasta integrale o normale · 250–300 g","Riso · 200 g","Pane integrale · circa 500 g","Ingredienti per una piadina integrale · 90 g","Fette biscottate integrali · 1 confezione","Patate · circa 600 g"],"Verdure":["Broccoli · 400–500 g","Cavolfiore · 1 medio","Zucchine · 3","Carote · 600 g","Finocchi · 3","Funghi · 250 g","Verdure da minestrone · 500–700 g","Insalata · 1 confezione","Passata di pomodoro · 1 bottiglia"],"Frutta e dispensa":["Frutta di stagione · 12–14 pezzi","Noci o mandorle · 100 g","Olio extravergine d'oliva","Rosmarino, aglio, erbe e spezie","Confettura · 1 vasetto","Pangrattato · piccola quantità"]},"workouts":[],"exerciseNotes":["Nei giorni di turno notturno privilegia il riposo e una camminata leggera se ti senti riposato.","Camminate graduali a passo comodo; evita sforzi intensi senza valutazione medica."]};
 const PROGRAM_KEY='dietaConteProgram';
 const ARCHIVE_KEY='dietaConteArchive';
 let program=loadProgram();
 function clone(x){return JSON.parse(JSON.stringify(x))}
-function loadProgram(){try{return JSON.parse(localStorage.getItem(PROGRAM_KEY))||clone(DEFAULT_PROGRAM)}catch(e){return clone(DEFAULT_PROGRAM)}}
+function loadProgram(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(PROGRAM_KEY)||'null');
+    if(saved && saved.startDate>=NOV_2026_PROGRAM.startDate)return saved;
+    if(saved && saved.startDate<NOV_2026_PROGRAM.startDate){
+      const archive=JSON.parse(localStorage.getItem(ARCHIVE_KEY)||'[]');
+      if(!archive.some(x=>x.id===saved.id)){archive.push(saved);localStorage.setItem(ARCHIVE_KEY,JSON.stringify(archive.slice(-20)))}
+    }
+    const fresh=clone(NOV_2026_PROGRAM);
+    localStorage.setItem(PROGRAM_KEY,JSON.stringify(fresh));
+    return fresh;
+  }catch(e){return clone(NOV_2026_PROGRAM)}
+}
 function saveProgram(){localStorage.setItem(PROGRAM_KEY,JSON.stringify(program))}
 function sanitizeProgram(p){
   if(!p||p.schema!=='dieta-conte-v1'||!Array.isArray(p.days)||!p.days.length) throw new Error('Formato programma non riconosciuto');
@@ -137,7 +150,7 @@ function renderWeekEditor(){
   document.getElementById('weekEditor').innerHTML=program.days.map((d,i)=>{const w=(program.workouts||[]).find(x=>x.date===d.date)||{};return `<div class="editor-day"><b>${d.label}</b><select data-edit-shift="${i}">${opts.map(o=>`<option ${d.shift===o?'selected':''}>${o}</option>`).join('')}</select><input data-edit-type="${i}" placeholder="Allenamento / riposo" value="${w.type||''}"><input data-edit-duration="${i}" placeholder="Durata" value="${w.duration||''}"></div>`}).join('');
 }
 document.getElementById('saveWeekEdits').onclick=()=>{
-  const ws=[];program.days.forEach((d,i)=>{d.shift=document.querySelector(`[data-edit-shift="${i}"]`).value;const type=document.querySelector(`[data-edit-type="${i}"]`).value.trim(),duration=document.querySelector(`[data-edit-duration="${i}"]`).value.trim();if(type)ws.push({date:d.date,label:d.label.toUpperCase(),type,duration,icon:type.toLowerCase().includes('cyc')?'🚲':'👟'})});program.workouts=ws;saveProgram();closeModal();renderProgram();showStatus('Turni e attività aggiornati ✓')
+  const ws=[];program.days.forEach((d,i)=>{d.shift=document.querySelector(`[data-edit-shift="${i}"]`).value;const type=document.querySelector(`[data-edit-type="${i}"]`).value.trim(),duration=document.querySelector(`[data-edit-duration="${i}"]`).value.trim();if(type)ws.push({date:d.date,label:d.label.toUpperCase(),type,duration,icon:type.toLowerCase().includes('cyc')?'🚲':'👟'})});program.workouts=ws;localStorage.setItem('dietaConteManualShifts-'+program.id,'1');saveProgram();closeModal();renderProgram();showStatus('Turni e attività aggiornati ✓')
 };
 
 // Peso e attività personali restano indipendenti dalle settimane
@@ -241,3 +254,41 @@ document.getElementById('showWeightCompare').onchange=drawPressureWeightChart;
 document.querySelectorAll('[data-bp-range]').forEach(b=>b.onclick=()=>{pressureRange=b.dataset.bpRange;localStorage.setItem(PRESSURE_RANGE_KEY,pressureRange);renderPressureRange();drawPressureChart();drawPressureWeightChart()});
 document.getElementById('exportPressureCsv').onclick=()=>{if(!pressureReadings.length){alert('Nessuna misurazione da esportare.');return}const rows=[['Data e ora','Momento','Massima mmHg','Minima mmHg','Battiti bpm','Note'],...pressureReadings.map(r=>[fmtDateTime(r.datetime),r.moment,r.sys,r.dia,r.pulse,r.note||''])];const csv='\ufeff'+rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='Diario-Pressorio-Dieta-Conte.csv';a.click();URL.revokeObjectURL(a.href)};
 renderPressure();
+
+// RC8: sincronizzazione opzionale e sola lettura con Turni di Famiglia.
+// Nessuna scrittura sul database dei turni; in caso di errore restano validi i turni manuali.
+async function syncTurniFamiglia(){
+  if(program.startDate!=='2026-11-09')return;
+  if(localStorage.getItem('dietaConteManualShifts-'+program.id)==='1')return;
+  const base='https://turni-di-famiglia-99d41-default-rtdb.europe-west1.firebasedatabase.app/turni-famiglia';
+  try{
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6000);
+    let anchor,days;
+    try{
+      const [a,d]=await Promise.all([fetch(base+'/meta/anchor.json',{signal:controller.signal}),fetch(base+'/days.json',{signal:controller.signal})]);
+      if(!a.ok||!d.ok)throw Error('Lettura non autorizzata');
+      anchor=await a.json();days=await d.json();
+    }finally{clearTimeout(timer)}
+    if(!anchor||!anchor.date||!['M','N','P','R'].includes(anchor.value))throw Error('Dati turni incompleti');
+    const cycle=['M','M','R','N','N','R','P','P','R'];
+    const map={M:'06–14',N:'22–06',P:'14–22',R:'Riposo',F:'Ferie'};
+    const utcDate=x=>Date.parse(x+'T12:00:00Z');
+    let changed=false;
+    for(const item of program.days){
+      const rec=(days||{})[item.date]||{};
+      let code;
+      if(rec.andrea==='F')code='F';
+      else if(typeof rec.andrea==='string'&&rec.andrea.startsWith('X:'))code=rec.andrea.slice(2);
+      else{
+        const diff=Math.round((utcDate(item.date)-utcDate(anchor.date))/86400000);
+        const ix=cycle.indexOf(anchor.value);
+        code=cycle[((ix+diff)%cycle.length+cycle.length)%cycle.length];
+      }
+      const shift=map[code]||code;
+      if(shift&&shift!==item.shift){item.shift=shift;changed=true}
+    }
+    if(changed){saveProgram();renderProgram()}
+    console.info('Dieta Conte: turni sincronizzati in sola lettura');
+  }catch(e){console.info('Dieta Conte: turni manuali mantenuti; sincronizzazione non disponibile',e.message)}
+}
+syncTurniFamiglia();
